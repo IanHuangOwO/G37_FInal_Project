@@ -1,0 +1,19 @@
+{
+	"terminal.integrated.env.windows": {
+		"PATH": "${workspaceFolder}\\..\\MinGW\\bin;${env:PATH}"
+	},
+	"files.associations": {
+		"element.h": "c",
+		"projectile.h": "c",
+		"physics.h": "c",
+		"character.h": "c",
+		"ground.h": "c",
+		"gamescene.h": "c",
+		"scenemanager.h": "c",
+		"collision.h": "c",
+		"stdbool.h": "c",
+		"allegro_audio.h": "c",
+		"rectangle.h": "c",
+		"algif.h": "c"
+	}
+}
