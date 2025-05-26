@@ -6,6 +6,7 @@
 #include "projectile.h"
 #include "../scene/sceneManager.h"
 #include "../shapes/Rectangle.h"
+#include "../physics/physics.h"
 #include "../algif5/algif.h"
 #include "../scene/gamescene.h"
 #include <stdio.h>
@@ -14,8 +15,7 @@
    [Character function]
 */
 
-#define GRAVITY 1000.0f
-#define JUMP_VELOCITY -1000.0f
+#define JUMP_VELOCITY -8.0f
 #define MOVE_SPEED     5
 
 Elements *New_Character(int label)
@@ -42,6 +42,7 @@ Elements *New_Character(int label)
     pDerivedObj->height = pDerivedObj->gif_status[0]->height;
     pDerivedObj->x = 300;
     pDerivedObj->y = 0;
+    pDerivedObj->vx = 0;
     pDerivedObj->vy = 0; 
     pDerivedObj->hitbox = New_Rectangle(pDerivedObj->x,
                                         pDerivedObj->y,
@@ -50,7 +51,7 @@ Elements *New_Character(int label)
     pDerivedObj->dir = true; // true: face to right, false: face to left
     // initial the animation component
     pDerivedObj->state = STOP;
-    pDerivedObj->is_jumping = false;
+    pDerivedObj->is_in_air = false;
     pDerivedObj->new_proj = false;
     pObj->pDerivedObj = pDerivedObj;
     // setting derived object function
@@ -62,48 +63,42 @@ Elements *New_Character(int label)
 }
 void Character_update(Elements *self) {
     Character *chara = (Character *)self->pDerivedObj;
+    
+    Contact_Check_To_Character(self);  
 
-    // Jump trigger
-    if (key_state[ALLEGRO_KEY_W] && _Character_is_standing_on_ground(self)) {
+    // Determine if standing on the ground using contact info
+    bool grounded = (chara->contact.wall_bot_y != -1 && chara->y + chara->height == chara->contact.wall_bot_y);
+    chara->is_in_air = !grounded;
+    
+    // Jump if grounded and key is pressed
+    if (key_state[ALLEGRO_KEY_W] && grounded) {
         chara->vy = JUMP_VELOCITY;
-        chara->is_jumping = true;
+        chara->is_in_air = true;
     }
 
     // Horizontal movement
     if (key_state[ALLEGRO_KEY_A]) {
         chara->dir = false;
-        _Character_update_position(self, -MOVE_SPEED, 0);
+        chara->vx = -MOVE_SPEED;  // ← store velocity, not move directly
         if (chara->state != ATK) chara->state = MOVE;
     } else if (key_state[ALLEGRO_KEY_D]) {
         chara->dir = true;
-        _Character_update_position(self, MOVE_SPEED, 0);
+        chara->vx = MOVE_SPEED;
         if (chara->state != ATK) chara->state = MOVE;
-    } else if (!chara->is_jumping && chara->state != ATK) {
-        chara->state = STOP;
-    }
-
-    // Jump physics
-    if (chara->is_jumping) {
-        float dt = 1.0f / FPS;
-        chara->vy += GRAVITY * dt;
-        _Character_update_position(self, 0, (int)(chara->vy * dt));
-
-        if (_Character_is_standing_on_ground(self)) {
-            chara->vy = 0;
-            chara->is_jumping = false;
-            if (chara->state != ATK) chara->state = STOP;
-        }
+    } else {
+        chara->vx = 0;
+        if (chara->state != ATK) chara->state = STOP;
     }
 
     if (key_state[ALLEGRO_KEY_SPACE] && chara->state != ATK) {
-    chara->state = ATK;
-    chara->new_proj = false;
+        chara->state = ATK;
+        chara->new_proj = false;
 
-    // reset animation
-    if (chara->gif_status[ATK]) {
-        chara->gif_status[ATK]->display_index = 0;
-        chara->gif_status[ATK]->done = false;
-    }
+        // reset animation
+        if (chara->gif_status[ATK]) {
+            chara->gif_status[ATK]->display_index = 0;
+            chara->gif_status[ATK]->done = false;
+        }
     }
 
     if (chara->state == ATK) {
@@ -120,6 +115,8 @@ void Character_update(Elements *self) {
             chara->new_proj = false;
         }
     }
+
+    Movement_Physics_To_Character(self);
 }
 void Character_draw(Elements *self)
 {
@@ -137,15 +134,14 @@ void Character_draw(Elements *self)
 }
 void Character_destory(Elements *self)
 {
-    Character *Obj = ((Character *)(self->pDerivedObj));
-    al_destroy_sample_instance(Obj->atk_Sound);
+    Character *chara = ((Character *)(self->pDerivedObj));
+    al_destroy_sample_instance(chara->atk_Sound);
     for (int i = 0; i < 3; i++)
-        algif_destroy_animation(Obj->gif_status[i]);
-    free(Obj->hitbox);
-    free(Obj);
+        algif_destroy_animation(chara->gif_status[i]);
+    free(chara->hitbox);
+    free(chara);
     free(self);
 }
-
 void _Character_update_position(Elements *self, int dx, int dy)
 {
     Character *chara = ((Character *)(self->pDerivedObj));
@@ -156,107 +152,4 @@ void _Character_update_position(Elements *self, int dx, int dy)
     hitbox->update_center_y(hitbox, dy);
 }
 
-void Character_interact(Elements *self)
-{
-    Character *chara = (Character *)(self->pDerivedObj);
-
-    // Prevent forward movement if wall in front is 2+ tiles high
-    // if (_Character_is_blocked_by_wall(self) && chara->state == MOVE) {
-    //     chara->state = STOP;
-    //     return;
-    // }
-
-    // Handle vertical collisions (upward push)
-    ElementVec ground_elements = _Get_label_elements(scene, Ground_L);
-
-    for (int i = 0; i < ground_elements.len; i++) {
-        Ground *ground = (Ground *)(ground_elements.arr[i]->pDerivedObj);
-
-        for (int r = 0; r < MAP_ROWS; r++) {
-            for (int c = 0; c < MAP_COLS; c++) {
-                if (!ground->active[r][c]) continue;
-
-                Shape *tile_hitbox = ground->hitboxes[r][c];
-                if (tile_hitbox->overlap(tile_hitbox, chara->hitbox)) {
-                    _Character_update_position(self, 0, -1);
-                    return;
-                }
-            }
-        }
-    }
-
-    // Apply gravity if not on ground
-    if (!_Character_is_standing_on_ground(self)) {
-        _Character_update_position(self, 0, 3);
-    }
-}
-
-bool _Character_is_standing_on_ground(Elements *self) {
-    Character *chara = (Character *)(self->pDerivedObj);
-    ElementVec ground_elements = _Get_label_elements(scene, Ground_L);
-
-    for (int i = 0; i < ground_elements.len; i++) {
-        Ground *ground = (Ground *)(ground_elements.arr[i]->pDerivedObj);
-
-        for (int r = 0; r < MAP_ROWS; r++) {
-            for (int c = 0; c < MAP_COLS; c++) {
-                if (!ground->active[r][c]) continue;
-
-                Shape *tile_hitbox = ground->hitboxes[r][c];
-
-                int char_bottom = chara->y + chara->height;
-                int tile_top = tile_hitbox->get_top(tile_hitbox);
-                int char_left = chara->x;
-                int char_right = chara->x + chara->width;
-                int tile_left = tile_hitbox->get_left(tile_hitbox);
-                int tile_right = tile_hitbox->get_right(tile_hitbox);
-
-                bool horizontally_aligned = !(char_right <= tile_left || char_left >= tile_right);
-                bool directly_above = char_bottom <= tile_top && tile_top - char_bottom <= 1;
-
-                if (horizontally_aligned && directly_above) {
-                    return true;
-                }
-            }
-        }
-    }
-
-    return false;
-}
-
-bool _Character_is_blocked_by_wall(Elements *self) {
-    Character *chara = (Character *)(self->pDerivedObj);
-    ElementVec ground_elements = _Get_label_elements(scene, Ground_L);
-
-    int check_x = chara->dir
-        ? chara->x + chara->width + 1  // one pixel to the right
-        : chara->x - 1;                // one pixel to the left
-
-    int look_col = check_x / TILE_WIDTH;
-
-    for (int i = 0; i < ground_elements.len; i++) {
-        Ground *ground = (Ground *)(ground_elements.arr[i]->pDerivedObj);
-
-        if (look_col < 0 || look_col >= MAP_COLS)
-            continue;
-
-        int solid_count = 0;
-
-        for (int r = 0; r < MAP_ROWS; r++) {
-            if (!ground->active[r][look_col]) continue;
-
-            int tile_y = r * TILE_HEIGHT;
-
-            // Only count if the tile overlaps character's body vertically
-            if (tile_y <= chara->y + chara->height &&
-                tile_y + TILE_HEIGHT >= chara->y) {
-                solid_count++;
-            }
-        }
-
-        if (solid_count >= 2)
-            return true;
-    }
-
-    return false;
-}
+void Character_interact(Elements *self) {}

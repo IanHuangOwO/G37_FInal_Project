@@ -3,6 +3,7 @@
 #include <allegro5/allegro_audio.h>
 #include "element.h"
 #include "../shapes/Shape.h"
+#include "../physics/contact.h"
 #include "../algif5/algif.h"
 #include <stdbool.h>
 
@@ -16,6 +17,7 @@ typedef enum CharacterType
     ATK,
     JUMP,
 } CharacterType;
+
 typedef struct _Character
 {
     int x, y;
@@ -27,16 +29,19 @@ typedef struct _Character
     ALLEGRO_SAMPLE_INSTANCE *atk_Sound;
     int anime;      // counting the time of animation
     int anime_time; // indicate how long the animation
-    bool is_jumping;
+    bool is_in_air;
     bool new_proj;
+    ContactInfo contact; 
     Shape *hitbox; // the hitbox of object
 } Character;
 Elements *New_Character(int label);
 void Character_update(Elements *self);
+
 void Character_interact(Elements *self);
 void Character_draw(Elements *self);
 void Character_destory(Elements *self);
+
 void _Character_update_position(Elements *self, int dx, int dy);
-bool _Character_is_standing_on_ground(Elements *self);
+void _Character_record_environment_contact(Elements *self);
 bool _Character_is_blocked_by_wall(Elements *self);
 #endif
