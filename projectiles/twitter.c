@@ -1,6 +1,6 @@
 #include "twitter.h"
 
-#define TWITTER_IMG_PATH "assets/projectiles/golf.gif"
+#define TWITTER_IMG_PATH "assets/projectiles/twitter.gif"
 #define TWITTER_DURABILITY 1
 #define TWITTER_ACTION_COOLDOWN 5
 #define TWITTER_BOUNCE_DECAY 0

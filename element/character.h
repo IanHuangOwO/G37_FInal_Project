@@ -12,12 +12,15 @@
 
 #define ATTACK_POWER_MAX 20
 #define ATTACK_POWER_MIN 0.1
-#define ATTACK_POWER_CHARGE_SPEED 0.05
+#define ATTACK_POWER_CHARGE_SPEED 0.1
 
 #define ATTACK_ANGLE_MAX  90
 #define ATTACK_ANGLE_MIN -90
 #define ATTACK_ANGLE_CHARGE_SPEED 0.2
 
+#define HP_MAX      300
+#define EXP_MAX     300
+#define FURRY_MAX   150
 #define MOVE_SPEED     5
 
 typedef enum CharacterStatus

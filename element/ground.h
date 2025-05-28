@@ -6,9 +6,9 @@
 #include "../shapes/Shape.h"
 
 #define TILE_WIDTH 16
-#define TILE_HEIGHT 16
+#define TILE_HEIGHT 12
 #define MAP_COLS (1920 / 16)
-#define MAP_ROWS (1080 / 16)
+#define MAP_ROWS (1080 / 12)
 
 typedef struct _Ground {
     int x, y;

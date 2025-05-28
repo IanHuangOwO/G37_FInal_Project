@@ -32,7 +32,7 @@ Elements *New_Character(int who, int label)
     pDerivedObj->width = pDerivedObj->gif_status[0]->width;
     pDerivedObj->height = pDerivedObj->gif_status[0]->height;
     if (label == 1) pDerivedObj->x = 300;
-    else pDerivedObj->x = 500;
+    else pDerivedObj->x = 1620;
     pDerivedObj->y = 0;
     pDerivedObj->vx = 0;
     pDerivedObj->vy = 0; 
@@ -57,7 +57,7 @@ Elements *New_Character(int who, int label)
     pDerivedObj->atk_furry = 0;
     pDerivedObj->charging = true;
     pDerivedObj->was_charging = false;
-    pDerivedObj->hp = 1000;
+    pDerivedObj->hp = HP_MAX;
     pDerivedObj->hurt_cooldown = 0;
     pDerivedObj->new_proj = false;
     pObj->pDerivedObj = pDerivedObj;

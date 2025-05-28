@@ -1,6 +1,7 @@
 #ifndef GAMESCENE_H_INCLUDED
 #define GAMESCENE_H_INCLUDED
 #include "scene.h"
+#include <allegro5/allegro_font.h>
 
 /*
    [game scene object]
@@ -29,6 +30,7 @@ typedef enum GroundWho
 
 typedef struct _GameScene
 {
+    ALLEGRO_FONT *font;
     ALLEGRO_BITMAP *background;
 
 } GameScene;
