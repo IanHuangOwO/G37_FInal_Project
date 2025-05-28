@@ -3,10 +3,10 @@
 void Contact_Compute_Hitbox(Shape *hitbox, ContactInfo *info, ElementVec *ground_elements) {
     if (!hitbox || !info || !ground_elements) return;
 
-    double top    = hitbox->get_top(hitbox);
-    double bottom = hitbox->get_bottom(hitbox);
-    double left   = hitbox->get_left(hitbox);
-    double right  = hitbox->get_right(hitbox);
+    float top    = hitbox->get_top(hitbox);
+    float bottom = hitbox->get_bottom(hitbox);
+    float left   = hitbox->get_left(hitbox);
+    float right  = hitbox->get_right(hitbox);
 
     info->wall_top_y = -1;
     info->wall_bot_y = -1;

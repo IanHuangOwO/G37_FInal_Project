@@ -9,4 +9,7 @@
 void Contact_Check_To_Character(Elements *self);
 void Movement_Physics_To_Character(Elements *self);
 
+void Contact_Check_To_Projectile(Elements *self, bool collision);
+void Movement_Physics_To_Projectile(Elements *self, bool collision, bool gravity);
+
 #endif // PHYSICS_H

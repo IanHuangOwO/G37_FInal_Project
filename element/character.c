@@ -2,8 +2,10 @@
 #include <allegro5/allegro_acodec.h>
 #include <allegro5/allegro_image.h>
 #include "character.h"
-#include "ground.h"
 #include "projectile.h"
+#include "../character/trump.h"
+#include "../character/jinping.h"
+#include "../character/guodong.h"
 #include "../scene/sceneManager.h"
 #include "../shapes/Rectangle.h"
 #include "../physics/physics.h"
@@ -11,49 +13,55 @@
 #include "../scene/gamescene.h"
 #include <stdio.h>
 #include <stdbool.h>
+#include <math.h>
 /*
    [Character function]
 */
 
-#define JUMP_VELOCITY -8.0f
-#define MOVE_SPEED     5
-
-Elements *New_Character(int label)
+Elements *New_Character(int who, int label)
 {
     Character *pDerivedObj = (Character *)malloc(sizeof(Character));
     Elements *pObj = New_Elements(label);
-    // setting derived object member
-    // load character images
-    char state_string[3][10] = {"idle", "run", "attack"};
-    for (int i = 0; i < 3; i++)
-    {
-        char buffer[50];
-        sprintf(buffer, "assets/image/chara_%s.gif", state_string[i]);
-        pDerivedObj->gif_status[i] = algif_new_gif(buffer, -1);
-    }
-    // load effective sound
-    ALLEGRO_SAMPLE *sample = al_load_sample("assets/sound/atk_sound.wav");
-    pDerivedObj->atk_Sound = al_create_sample_instance(sample);
-    al_set_sample_instance_playmode(pDerivedObj->atk_Sound, ALLEGRO_PLAYMODE_ONCE);
-    al_attach_sample_instance_to_mixer(pDerivedObj->atk_Sound, al_get_default_mixer());
+
+    // Load character assets based on `who`
+    if (who == 0)       Trump_Load_Assets(pDerivedObj);
+    else if (who == 1)  JinPing_Load_Assets(pDerivedObj);
+    else                GuoDong_Load_Assets(pDerivedObj);
 
     // initial the geometric information of character
     pDerivedObj->width = pDerivedObj->gif_status[0]->width;
     pDerivedObj->height = pDerivedObj->gif_status[0]->height;
-    pDerivedObj->x = 300;
+    if (label == 1) pDerivedObj->x = 300;
+    else pDerivedObj->x = 500;
     pDerivedObj->y = 0;
     pDerivedObj->vx = 0;
     pDerivedObj->vy = 0; 
+    pDerivedObj->bounce_decay = 0;
     pDerivedObj->hitbox = New_Rectangle(pDerivedObj->x,
                                         pDerivedObj->y,
                                         pDerivedObj->x + pDerivedObj->width,
                                         pDerivedObj->y + pDerivedObj->height);
-    pDerivedObj->dir = true; // true: face to right, false: face to left
+
     // initial the animation component
-    pDerivedObj->state = STOP;
+    pDerivedObj->who = who;
+    pDerivedObj->player = label;
+    pDerivedObj->state = IDLE;
+    if (label == 1) pDerivedObj->dir = true;
+    else pDerivedObj->dir = false;
     pDerivedObj->is_in_air = false;
+
+    // Default attack parameters
+    pDerivedObj->atk_power = 10.0f;
+    pDerivedObj->atk_angle = -45.0f;
+    pDerivedObj->atk_level = 0;
+    pDerivedObj->atk_furry = 0;
+    pDerivedObj->charging = true;
+    pDerivedObj->was_charging = false;
+    pDerivedObj->hp = 1000;
+    pDerivedObj->hurt_cooldown = 0;
     pDerivedObj->new_proj = false;
     pObj->pDerivedObj = pDerivedObj;
+
     // setting derived object function
     pObj->Draw = Character_draw;
     pObj->Update = Character_update;
@@ -71,50 +79,81 @@ void Character_update(Elements *self) {
     chara->is_in_air = !grounded;
     
     // Jump if grounded and key is pressed
-    if (key_state[ALLEGRO_KEY_W] && grounded) {
-        chara->vy = JUMP_VELOCITY;
-        chara->is_in_air = true;
+    // if (((key_state[ALLEGRO_KEY_W] && self->label == 1) || (key_state[ALLEGRO_KEY_UP] && self->label == 2)) && grounded) {
+    //     chara->vy = -8f;
+    //     chara->is_in_air = true;
+    // }
+
+    // Arrage Angle 
+    if ((key_state[ALLEGRO_KEY_W] && self->label == 1) || (key_state[ALLEGRO_KEY_UP] && self->label == 2)) {
+        chara->atk_angle -= ATTACK_ANGLE_CHARGE_SPEED;
+        if (chara->atk_angle < ATTACK_ANGLE_MIN) chara->atk_angle = ATTACK_ANGLE_MAX;
+        printf("\rPlayer: %d Angle: %f", chara->player, -chara->atk_angle);
+    } 
+    else if ((key_state[ALLEGRO_KEY_S] && self->label == 1) || (key_state[ALLEGRO_KEY_DOWN] && self->label == 2)) {
+        chara->atk_angle += ATTACK_ANGLE_CHARGE_SPEED;
+        if (chara->atk_angle > ATTACK_ANGLE_MAX) chara->atk_angle = ATTACK_ANGLE_MAX;
+        printf("\rPlayer: %d Angle: %f", chara->player, -chara->atk_angle);
     }
 
     // Horizontal movement
-    if (key_state[ALLEGRO_KEY_A]) {
+    if ((key_state[ALLEGRO_KEY_A] && self->label == 1) || (key_state[ALLEGRO_KEY_LEFT] && self->label == 2)) {
         chara->dir = false;
         chara->vx = -MOVE_SPEED;  // ← store velocity, not move directly
         if (chara->state != ATK) chara->state = MOVE;
-    } else if (key_state[ALLEGRO_KEY_D]) {
+    } else if ((key_state[ALLEGRO_KEY_D] && self->label == 1) || (key_state[ALLEGRO_KEY_RIGHT] && self->label == 2)) {
         chara->dir = true;
         chara->vx = MOVE_SPEED;
         if (chara->state != ATK) chara->state = MOVE;
     } else {
         chara->vx = 0;
-        if (chara->state != ATK) chara->state = STOP;
+        if (chara->state != ATK) chara->state = IDLE;
     }
 
-    if (key_state[ALLEGRO_KEY_SPACE] && chara->state != ATK) {
-        chara->state = ATK;
-        chara->new_proj = false;
-
-        // reset animation
-        if (chara->gif_status[ATK]) {
-            chara->gif_status[ATK]->display_index = 0;
-            chara->gif_status[ATK]->done = false;
+    if (((key_state[ALLEGRO_KEY_Q] && self->label == 1) || (key_state[ALLEGRO_KEY_RSHIFT] && self->label == 2)) && chara->state == IDLE) {
+        if (chara->charging) {
+            chara->atk_power += ATTACK_POWER_CHARGE_SPEED;
+            if (chara->atk_power >= ATTACK_POWER_MAX) {
+                chara->atk_power = ATTACK_POWER_MAX;
+                chara->charging = false;  // Start going down
+            }
+            printf("\rPlayer: %d Power: %f", chara->player, chara->atk_power);
+        } else {
+            chara->atk_power -= ATTACK_POWER_CHARGE_SPEED;
+            if (chara->atk_power <= ATTACK_POWER_MIN) {
+                chara->atk_power = ATTACK_POWER_MIN;
+                chara->charging = true;  // Start going up
+            }
+            printf("\rPlayer: %d Power: %f", chara->player, chara->atk_power);
+        }
+        chara->was_charging = true;
+    } else {
+        if (chara->was_charging) {
+            chara->state = ATK;
+            chara->new_proj = false;
+            
+            // reset animation
+            if (chara->gif_status[ATK]) {
+                chara->gif_status[ATK]->display_index = 0;
+                chara->gif_status[ATK]->done = false;
+            }
+            chara->was_charging = false;
         }
     }
 
     if (chara->state == ATK) {
         if (chara->gif_status[ATK]->display_index == 2 && !chara->new_proj) {
-            Elements *pro = chara->dir
-                ? New_Projectile(Projectile_L, chara->x + chara->width - 100, chara->y + 10, 5)
-                : New_Projectile(Projectile_L, chara->x - 50, chara->y + 10, -5);
-            _Register_elements(scene, pro);
-            chara->new_proj = true;
+            Character_Attack(self);
+            chara->atk_power = ATTACK_POWER_MIN;
         }
 
         if (chara->gif_status[ATK]->done) {
-            chara->state = STOP;
+            chara->state = IDLE;
             chara->new_proj = false;
         }
     }
+
+    if (chara->hurt_cooldown > 0) chara->hurt_cooldown--;
 
     Movement_Physics_To_Character(self);
 }
@@ -127,15 +166,11 @@ void Character_draw(Elements *self)
     {
         al_draw_bitmap(frame, chara->x, chara->y, ((chara->dir) ? ALLEGRO_FLIP_HORIZONTAL : 0));
     }
-    if (chara->state == ATK && chara->gif_status[chara->state]->display_index == 2)
-    {
-        al_play_sample_instance(chara->atk_Sound);
-    }
 }
 void Character_destory(Elements *self)
 {
     Character *chara = ((Character *)(self->pDerivedObj));
-    al_destroy_sample_instance(chara->atk_Sound);
+    // al_destroy_sample_instance(chara->sounds[SOUND_ATTACK_1]);
     for (int i = 0; i < 3; i++)
         algif_destroy_animation(chara->gif_status[i]);
     free(chara->hitbox);
@@ -153,3 +188,44 @@ void _Character_update_position(Elements *self, int dx, int dy)
 }
 
 void Character_interact(Elements *self) {}
+
+void Character_Attack(Elements *self) {
+    Character *chara = (Character *)self->pDerivedObj;
+    if (chara->who == 0)        Trump_Attack(self);
+    else if (chara->who == 0)   JinPing_Attack(self);
+    else                        GuoDong_Attack(self);
+}
+void Character_Hurt(Elements *self, int damage) {
+    Character *chara = (Character *)self->pDerivedObj;
+    // Skip if in invincibility cooldown
+    if (chara->hurt_cooldown > 0) return;
+    
+    // Apply damage
+    chara->hp -= damage;
+    if (chara->hp < 0) chara->hp = 0;
+    
+    // Trigger hurt animation
+    chara->state = HURT;
+    chara->gif_status[HURT]->display_index = 0;
+    chara->gif_status[HURT]->done = false;
+
+    // Set cooldown
+    chara->hurt_cooldown = 60;
+
+    // Gain Furry
+    Character_Furry(self, damage);
+
+    printf("\nPlayer: %d Hp: %d\n", chara->player, chara->hp);
+}
+void Character_Furry(Elements *self, int amount) 
+{
+    Character *chara = (Character *)self->pDerivedObj;
+    chara->atk_furry += amount;
+     printf("\nPlayer: %d Furry: %d\n", chara->player, chara->atk_furry);
+}
+void Character_Level(Elements *self, int amount)
+{
+    Character *chara = (Character *)self->pDerivedObj;
+    chara->atk_level += amount;
+    printf("\nPlayer: %d Level: %d\n", chara->player, chara->atk_level);
+}

@@ -5,6 +5,7 @@
 
 void Physics_Apply_Gravity(float              *vy,
                            bool               *in_air,
+                           float              *bounce_decay,
                            Elements           *self,
                            Shape              *hitbox,
                            const ContactInfo  *contact,
@@ -26,7 +27,8 @@ void Physics_Apply_Gravity(float              *vy,
         if (*vy < 0 && contact->wall_top_y != -1 && next_top <= contact->wall_top_y) {
             int new_y = contact->wall_top_y;
             update_pos(self, 0, new_y - top);  // Align top
-            *vy = 0;
+            *vy = -*vy * *bounce_decay;
+            if (fabs(*vy) < 0.5f) *vy = 0.0f;
             return;
         }
 
@@ -34,8 +36,11 @@ void Physics_Apply_Gravity(float              *vy,
         if (*vy > 0 && contact->wall_bot_y != -1 && next_bottom >= contact->wall_bot_y) {
             int new_y = contact->wall_bot_y - (bottom - top);  // Align bottom
             update_pos(self, 0, new_y - top);
-            *vy = 0;
-            *in_air = false;
+            *vy = -*vy * *bounce_decay;
+            if (fabs(*vy) < 0.5f) {
+                *vy = 0.0f;
+                *in_air = false;
+            }
             return;
         }
 

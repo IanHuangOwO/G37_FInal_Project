@@ -14,12 +14,12 @@ Rectangle *Rectangle_Self(Shape *self);
 bool Rectangle_overlap(Shape *self, Shape *tar);
 double Rectangle_center_x(Shape *self);
 double Rectangle_center_y(Shape *self);
+void Rectangle_update_center_x(Shape *self, int x);
+void Rectangle_update_center_y(Shape *self, int y);
 double Rectangle_get_top(Shape *self);
 double Rectangle_get_bottom(Shape *self);
 double Rectangle_get_left(Shape *self);
 double Rectangle_get_right(Shape *self);
-void Rectangle_update_center_x(Shape *self, int x);
-void Rectangle_update_center_y(Shape *self, int y);
 ShapeType Rectangle_getType();
 Shape *New_Rectangle(double x1, double y1, double x2, double y2);
 

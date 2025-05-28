@@ -19,7 +19,7 @@ typedef struct _Ground {
     Shape *hitboxes[MAP_ROWS][MAP_COLS];
 } Ground;
 
-Elements *New_Ground(const char *image_path, const char *mask_path, int label);
+Elements *New_Ground(int who, int label);
 
 void Ground_update(Elements *self);
 void Ground_interact(Elements *self);

@@ -6,11 +6,12 @@
 #include "../physics/contact.h"
 
 void Physics_Apply_Gravity(
-    float   *p_vy,
-    bool    *p_in_air,
-    Elements *self,
-    Shape *hitbox,
-    const ContactInfo *contact,
+    float               *p_vy,
+    bool                *p_in_air,
+    float               *bounce_decay,
+    Elements            *self,
+    Shape               *hitbox,
+    const ContactInfo   *contact,
     void (*update_pos)(Elements*, int, int)
 );
 

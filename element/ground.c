@@ -2,13 +2,27 @@
 #include "../shapes/Rectangle.h"
 #include <stdio.h>
 
-Elements *New_Ground(const char *image_path, const char *mask_path, int label)
+Elements *New_Ground(int who, int label)
 {
     Ground *pDerivedObj = (Ground *)malloc(sizeof(Ground));
     Elements *pObj = New_Elements(label);
-
+    
     pDerivedObj->x = 0;
     pDerivedObj->y = 0;
+
+    const char *image_path  = NULL;
+    const char *mask_path   = NULL;
+
+    if (who == 0)
+    {
+        image_path = "assets/map/white_house_ground.png";
+        mask_path  = "assets/map/white_house_mask.txt";
+    }
+    else if (who == 1)
+    {
+        image_path = "assets/map/tiananmen_square_ground.png";
+        mask_path  = "assets/map/tiananmen_square_mask.txt";
+    }
 
     // Load image
     pDerivedObj->tileset = al_load_bitmap(image_path);

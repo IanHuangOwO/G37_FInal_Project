@@ -2,10 +2,12 @@
 
 void Physics_Apply_Collision(float             *vx, 
                              bool              *in_air,
+                             float             *bounce_decay,
                              Elements          *self, 
                              Shape             *hitbox,
                              const ContactInfo *contact,
-                             void (*update_pos)(Elements*, int, int)) 
+                             void (*update_pos)(Elements*, int, int)
+                            ) 
 {
     if (!vx || !self || !hitbox || !contact || !update_pos)
         return;
@@ -33,7 +35,8 @@ void Physics_Apply_Collision(float             *vx,
         if (wall_height >= height / 2) {
             int new_x = contact->wall_right_x - (right_edge - original_x);
             update_pos(self, new_x - original_x, 0);
-            *vx = 0.0f;
+            *vx = -*vx * *bounce_decay;
+            if (fabs(*vx) < 0.5f) *vx = 0.0f;
         } else if (!*in_air && wall_height > 0) {
             update_pos(self, move_x, -wall_height);  // Step up
         }
@@ -50,7 +53,8 @@ void Physics_Apply_Collision(float             *vx,
         if (wall_height >= height / 2) {
             int new_x = contact->wall_left_x;
             update_pos(self, new_x - original_x, 0);
-            *vx = 0.0f;
+            *vx = -*vx * *bounce_decay;
+            if (fabs(*vx) < 0.5f) *vx = 0.0f;
         } else if (!*in_air && wall_height > 0) {
             update_pos(self, move_x, -wall_height);
         }
