@@ -17,12 +17,12 @@ Scene *New_GameScene(int label)
     // setting derived object member
     pDerivedObj->font = al_load_ttf_font("assets/font/pirulen.ttf", 12, 0);
     // setting derived object member
-    pDerivedObj->background = al_load_bitmap("assets/map/white_house_background.png");
+    pDerivedObj->background = al_load_bitmap("assets/maps/white_house_background.png");
     pObj->pDerivedObj = pDerivedObj;
     // register element
     _Register_elements(pObj, New_Ground(White_House, Ground_L));
     _Register_elements(pObj, New_Character(Trump, Player1_L));
-    _Register_elements(pObj, New_Character(Trump, Player2_L));
+    _Register_elements(pObj, New_Character(JinPing, Player2_L));
     // setting derived object function
     pObj->Update = game_scene_update;
     pObj->Draw = game_scene_draw;

@@ -10,14 +10,20 @@
 
 typedef enum ProjectileWho
 {
-    GOLF = 0,
-    GOLF_EXPLOSION,
-    TWITTER,
-    TWITTER_EXPLOSION,
-    GREAT_WALL,
+    MAGA = 0,
+    MAGA_EXPLOSION,
+    DUMP_TRUCK,
+    DUMP_TRUCK_EXPLOSION,
+    POOP,
+    POOP_EXPLOSION,
+    DEPORT,
+    DEPORT_EXPLOSION,
     CROWN,
+    CROWN_EXPLOSION,
     WINNIE,
+    WINNIE_EXPLOSION,
     TANK,
+    TANK_EXPLOSION,
     JAIL,
     BABY,
     TORNADO,
@@ -46,6 +52,7 @@ typedef struct _Projectile
     // Interaction of the projectile
     int durability;
     int action_cooldown;
+    int special_action;
     int anime;
     int anime_time;
     ALGIF_ANIMATION *gif;

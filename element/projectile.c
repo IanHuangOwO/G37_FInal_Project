@@ -5,10 +5,21 @@
 #include "../physics/physics.h"
 #include "../scene/gamescene.h" // for element label
 #include "../scene/sceneManager.h" // for scene variable
-#include "../projectiles/golf.h"
-#include "../projectiles/golf_explosion.h"
-#include "../projectiles/twitter.h"
-#include "../projectiles/twitter_explosion.h"
+#include "../projectiles/maga.h"
+#include "../projectiles/maga_explosion.h"
+#include "../projectiles/dump_truck.h"
+#include "../projectiles/dump_truck_explosion.h"
+#include "../projectiles/poop.h"
+#include "../projectiles/poop_explosion.h"
+#include "../projectiles/deport.h"
+#include "../projectiles/deport_explosion.h"
+#include "../projectiles/crown.h"
+#include "../projectiles/crown_explosion.h"
+#include "../projectiles/winnie.h"
+#include "../projectiles/winnie_explosion.h"
+#include "../projectiles/tank.h"
+#include "../projectiles/tank_explosion.h"
+
 #include <math.h>
 /*
    [Projectile function]
@@ -24,25 +35,64 @@ Elements *New_Projectile(int label, int x, int y, float angle_deg, float power, 
     float vx = cosf(angle_rad) * power;
     float vy = sinf(angle_rad) * power;
 
-    if (who == GOLF)                    Golf_Initialize(pDerivedObj);
-    else if (who == GOLF_EXPLOSION)     Golf_Explosion_Initialize(pDerivedObj);
-    else if (who == TWITTER)            Twitter_Initialize(pDerivedObj);
-    else if (who == TWITTER_EXPLOSION)  Twitter_Explosion_Initialize(pDerivedObj);
-    
     pDerivedObj->who = who;
     pDerivedObj->player = player;
-    pDerivedObj->width = pDerivedObj->gif->width;
-    pDerivedObj->height = pDerivedObj->gif->height;
     pDerivedObj->x = x;
     pDerivedObj->y = y;
     pDerivedObj->vx = vx;
     pDerivedObj->vy = vy;
     pDerivedObj->is_in_air = true;
+    pDerivedObj->special_action = 0;
 
-    pDerivedObj->hitbox = New_Circle(pDerivedObj->x + pDerivedObj->width / 2,
-                                     pDerivedObj->y + pDerivedObj->height / 2,
-                                     min(pDerivedObj->width, pDerivedObj->height) / 2);
-
+    switch (who) {
+        case MAGA:
+            Maga_Initialize(pDerivedObj);
+            break;
+        case MAGA_EXPLOSION:
+            Maga_Explosion_Initialize(pDerivedObj);
+            break;
+        case DUMP_TRUCK:
+            Dump_Truck_Initialize(pDerivedObj);
+            break;
+        case DUMP_TRUCK_EXPLOSION:
+            Dump_Truck_Explosion_Initialize(pDerivedObj);
+            break;
+        case POOP:
+            Poop_Initialize(pDerivedObj);
+            break;
+        case POOP_EXPLOSION:
+            Poop_Explosion_Initialize(pDerivedObj);
+            break;
+        case DEPORT:
+            Deport_Initialize(pDerivedObj);
+            break;
+        case DEPORT_EXPLOSION:
+            Deport_Explosion_Initialize(pDerivedObj);
+            break;
+        case CROWN:
+            Crown_Initialize(pDerivedObj);
+            break;
+        case CROWN_EXPLOSION:
+            Crown_Explosion_Initialize(pDerivedObj);
+            break;
+        case WINNIE:
+            Winnie_Initialize(pDerivedObj);
+            break;
+        case WINNIE_EXPLOSION:
+            Winnie_Explosion_Initialize(pDerivedObj);
+            break;
+        case TANK:
+            Tank_Initialize(pDerivedObj);
+            break;
+        case TANK_EXPLOSION:
+            Tank_Explosion_Initialize(pDerivedObj);
+            break;
+        default:
+            // Optional: handle unknown values
+            fprintf(stderr, "Unknown 'who' value: %d\n", who);
+            break;
+    }
+    
     // Setup projectile behavior
     pObj->inter_obj[pObj->inter_len++] = Ground_L;
     pObj->inter_obj[pObj->inter_len++] = Player1_L;
@@ -60,13 +110,29 @@ void Projectile_update(Elements *self)
     Projectile *proj = ((Projectile *)(self->pDerivedObj));
 
     Contact_Check_To_Projectile(self, proj->collision);
+
     if (proj->durability <= 0) {
-        if (proj->who == GOLF_EXPLOSION && !proj->gif->done) return; 
-        if (proj->who == TWITTER_EXPLOSION && !proj->gif->done) return; 
+        if (proj->who == MAGA_EXPLOSION && !proj->gif->done) return; 
+        if (proj->who == DUMP_TRUCK_EXPLOSION && !proj->gif->done) return;
+        if (proj->who == POOP_EXPLOSION && !proj->gif->done) return;
+        if (proj->who == DEPORT_EXPLOSION && !proj->gif->done) return;
+        if (proj->who == CROWN_EXPLOSION && !proj->gif->done) return;
+        if (proj->who == WINNIE_EXPLOSION && !proj->gif->done) return;
+        if (proj->who == TANK_EXPLOSION && !proj->gif->done) return;
         self->dele = true;
         return;  // Don't update physics during explosion
     }
+
+    if (proj->special_action <= 0 && proj->who == TANK) {
+        int center_x = (int)(proj->hitbox->center_x(proj->hitbox)) - proj->width / 2;
+        int center_y = (int)(proj->hitbox->center_y(proj->hitbox))  - proj->height / 2;
+        Elements *explode = New_Projectile(Projectile_L, center_x, center_y, (float) proj->gif->display_index * 20, 7, POOP, proj->player);
+        _Register_elements(scene, explode);
+        proj->special_action = 15;
+    }
+
     if (proj->action_cooldown > 0) proj->action_cooldown --;
+    if (proj->special_action > 0) proj->special_action --;
 
     Movement_Physics_To_Projectile(self, proj->collision, proj->gravity);
 }
@@ -83,7 +149,7 @@ void Projectile_interact(Elements *self)
 {
     Projectile *proj = (Projectile *)(self->pDerivedObj);
 
-    if (proj->durability <= 0 || proj->action_cooldown > 0) return;
+    if (proj->durability < 1 || proj->action_cooldown > 0) return;
 
     for (int j = 0; j < self->inter_len; j++) {
         int inter_label = self->inter_obj[j];
@@ -128,10 +194,54 @@ void _Projectile_interact_Character(Elements *self, Elements *tar)
 
     if (!proj->hitbox->overlap(proj->hitbox, chara->hitbox)) return;
 
-    if (proj->who == GOLF) Golf_Interaction_Character(self, tar);
-    else if (proj->who == GOLF_EXPLOSION) Golf_Explosion_Interaction_Character(self, tar);
-    else if (proj->who == TWITTER) Twitter_Interaction_Character(self, tar);
-    else if (proj->who == TWITTER_EXPLOSION) Twitter_Explosion_Interaction_Character(self, tar);
+    switch (proj->who) {
+        case MAGA:
+            Maga_Interaction_Character(self, tar);
+            break;
+        case MAGA_EXPLOSION:
+            Maga_Explosion_Interaction_Character(self, tar);
+            break;
+        case DUMP_TRUCK:
+            Dump_Truck_Interaction_Character(self, tar);
+            break;
+        case DUMP_TRUCK_EXPLOSION:
+            Dump_Truck_Explosion_Interaction_Character(self, tar);
+            break;
+        case POOP:
+            Poop_Interaction_Character(self, tar);
+            break;
+        case POOP_EXPLOSION:
+            Poop_Explosion_Interaction_Character(self, tar);
+            break;
+        case DEPORT:
+            Deport_Interaction_Character(self, tar);
+            break;
+        case DEPORT_EXPLOSION:
+            Deport_Explosion_Interaction_Character(self, tar);
+            break;
+        case CROWN:
+            Crown_Interaction_Character(self, tar);
+            break;
+        case CROWN_EXPLOSION:
+            Crown_Explosion_Interaction_Character(self, tar);
+            break;
+        case WINNIE:
+            Winnie_Interaction_Character(self, tar);
+            break;
+        case WINNIE_EXPLOSION:
+            Winnie_Explosion_Interaction_Character(self, tar);
+            break;
+        case TANK:
+            Tank_Interaction_Character(self, tar);
+            break;
+        case TANK_EXPLOSION:
+            Tank_Explosion_Interaction_Character(self, tar);
+            break;
+        default:
+            // Optional: handle unknown projectiles
+            fprintf(stderr, "Unknown projectile type: %d\n", proj->who);
+            break;
+    }
 }
 void _Projectile_interact_Ground(Elements *self, Elements *tar)
 {
@@ -139,10 +249,10 @@ void _Projectile_interact_Ground(Elements *self, Elements *tar)
     Ground *ground = (Ground *)tar->pDerivedObj;
 
     // Convert to tile indices
-    int left   = (int)(proj->hitbox->get_left(proj->hitbox)) / TILE_WIDTH - 20;
-    int right  = (int)(proj->hitbox->get_right(proj->hitbox)) / TILE_WIDTH + 20;
-    int top    = (int)(proj->hitbox->get_top(proj->hitbox)) / TILE_HEIGHT - 20;
-    int bottom = (int)(proj->hitbox->get_bottom(proj->hitbox)) / TILE_HEIGHT + 20;
+    int left   = (int)(proj->hitbox->get_left(proj->hitbox)) / TILE_WIDTH;
+    int right  = (int)(proj->hitbox->get_right(proj->hitbox)) / TILE_WIDTH;
+    int top    = (int)(proj->hitbox->get_top(proj->hitbox)) / TILE_HEIGHT;
+    int bottom = (int)(proj->hitbox->get_bottom(proj->hitbox)) / TILE_HEIGHT;
 
     // Clamp to map bounds
     if (left < 0) left = 0;
@@ -152,7 +262,7 @@ void _Projectile_interact_Ground(Elements *self, Elements *tar)
 
     for (int i = top; i <= bottom; i++) {
         for (int j = left; j <= right; j++) {
-            if (!ground->active[i][j]) continue;
+            if (!ground->hitboxes[i][j]) continue;
             if (ground->hitboxes[i][j]->overlap(ground->hitboxes[i][j], proj->hitbox)) {
                 goto collision;
             }
@@ -160,9 +270,53 @@ void _Projectile_interact_Ground(Elements *self, Elements *tar)
     }
     return;
     collision: {
-        if (proj->who == GOLF) Golf_Interaction_Ground(self, tar);
-        else if (proj->who == GOLF_EXPLOSION) Golf_Explosion_Interaction_Ground(self, tar);
-        else if (proj->who == TWITTER) Twitter_Interaction_Ground(self, tar);
-        else if (proj->who == TWITTER_EXPLOSION) Twitter_Explosion_Interaction_Ground(self, tar);
+        switch (proj->who) {
+            case MAGA:
+                Maga_Interaction_Ground(self, tar);
+                break;
+            case MAGA_EXPLOSION:
+                Maga_Explosion_Interaction_Ground(self, tar);
+                break;
+            case DUMP_TRUCK:
+                Dump_Truck_Interaction_Ground(self, tar);
+                break;
+            case DUMP_TRUCK_EXPLOSION:
+                Dump_Truck_Explosion_Interaction_Ground(self, tar);
+                break;
+            case POOP:
+                Poop_Interaction_Ground(self, tar);
+                break;
+            case POOP_EXPLOSION:
+                Poop_Explosion_Interaction_Ground(self, tar);
+                break;
+            case DEPORT:
+                Deport_Interaction_Ground(self, tar);
+                break;
+            case DEPORT_EXPLOSION:
+                Deport_Explosion_Interaction_Ground(self, tar);
+                break;
+            case CROWN:
+                Crown_Interaction_Ground(self, tar);
+                break;
+            case CROWN_EXPLOSION:
+                Crown_Explosion_Interaction_Ground(self, tar);
+                break;
+            case WINNIE:
+                Winnie_Interaction_Ground(self, tar);
+                break;
+            case WINNIE_EXPLOSION:
+                Winnie_Explosion_Interaction_Ground(self, tar);
+                break;
+            case TANK:
+                Tank_Interaction_Ground(self, tar);
+                break;
+            case TANK_EXPLOSION:
+                Tank_Explosion_Interaction_Ground(self, tar);
+                break;
+            default:
+                // Optional: handle unknown projectiles
+                fprintf(stderr, "Unknown projectile type: %d\n", proj->who);
+                break;
+        }
     }
 }

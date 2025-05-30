@@ -19,7 +19,7 @@
 #define ATTACK_ANGLE_CHARGE_SPEED 0.2
 
 #define HP_MAX      300
-#define EXP_MAX     300
+#define EXP_MAX     10000
 #define FURRY_MAX   150
 #define MOVE_SPEED     5
 

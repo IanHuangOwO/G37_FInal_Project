@@ -26,7 +26,7 @@ void Physics_Apply_Gravity(float              *vy,
         // ─── Ceiling collision ───
         if (*vy < 0 && contact->wall_top_y != -1 && next_top <= contact->wall_top_y) {
             int new_y = contact->wall_top_y;
-            update_pos(self, 0, new_y - top);  // Align top
+            update_pos(self, 0, new_y - top - 2);  // Align top
             *vy = -*vy * *bounce_decay;
             if (fabs(*vy) < 0.5f) *vy = 0.0f;
             return;
@@ -35,7 +35,7 @@ void Physics_Apply_Gravity(float              *vy,
         // ─── Floor collision ───
         if (*vy > 0 && contact->wall_bot_y != -1 && next_bottom >= contact->wall_bot_y) {
             int new_y = contact->wall_bot_y - (bottom - top);  // Align bottom
-            update_pos(self, 0, new_y - top);
+            update_pos(self, 0, new_y - top + 2);
             *vy = -*vy * *bounce_decay;
             if (fabs(*vy) < 0.5f) {
                 *vy = 0.0f;

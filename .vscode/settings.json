@@ -14,6 +14,17 @@
 		"stdbool.h": "c",
 		"allegro_audio.h": "c",
 		"rectangle.h": "c",
-		"algif.h": "c"
+		"algif.h": "c",
+		"maga_explosion.h": "c",
+		"twitter_explosion.h": "c",
+		"dump_truck.h": "c",
+		"dump_truck_explosion.h": "c",
+		"deport.h": "c",
+		"poop_explosion.h": "c",
+		"deport_explosion.h": "c",
+		"crown.h": "c",
+		"crown_explosion.h": "c",
+		"tank.h": "c",
+		"tank_explosion.h": "c"
 	}
 }

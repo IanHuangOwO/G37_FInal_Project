@@ -5,7 +5,7 @@ void GuoDong_Load_Assets(Character *chara) {
     const char *states[] = {"idle", "run", "attack", "hurt"};
     for (int i = 0; i < MAX_GIF; i++) {
         char path[64];
-        snprintf(path, sizeof(path), "assets/guodong/%s.gif", states[i]);
+        snprintf(path, sizeof(path), "assets/characters/guodong/%s.gif", states[i]);
         chara->gif_status[i] = algif_new_gif(path, -1);
     }
 
@@ -19,7 +19,7 @@ void GuoDong_Load_Assets(Character *chara) {
 
     for (int i = 0; i < MAX_SOUNDS; i++) {
         char sound_path[64];
-        snprintf(sound_path, sizeof(sound_path), "assets/guodong/%s", sound_files[i]);
+        snprintf(sound_path, sizeof(sound_path), "assets/characters/guodong/%s", sound_files[i]);
 
         ALLEGRO_SAMPLE *sample = al_load_sample(sound_path);
         if (sample) {

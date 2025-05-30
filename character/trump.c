@@ -1,12 +1,14 @@
 #include "trump.h"
-#include "../projectiles/golf.h"
+#include "../projectiles/maga.h"
+#include "../projectiles/deport.h"
+#include "../projectiles/dump_truck.h"
 
 void Trump_Load_Assets(Character *chara) {
     // Load animations
     const char *states[] = {"idle", "run", "attack", "hurt"};
     for (int i = 0; i < MAX_GIF; i++) {
         char path[64];
-        snprintf(path, sizeof(path), "assets/trump/%s.gif", states[i]);
+        snprintf(path, sizeof(path), "assets/characters/trump/%s.gif", states[i]);
         chara->gif_status[i] = algif_new_gif(path, -1);
     }
 
@@ -20,7 +22,7 @@ void Trump_Load_Assets(Character *chara) {
 
     for (int i = 0; i < MAX_SOUNDS; i++) {
         char sound_path[64];
-        snprintf(sound_path, sizeof(sound_path), "assets/trump/%s", sound_files[i]);
+        snprintf(sound_path, sizeof(sound_path), "assets/characters/trump/%s", sound_files[i]);
 
         ALLEGRO_SAMPLE *sample = al_load_sample(sound_path);
         if (sample) {
@@ -33,13 +35,11 @@ void Trump_Load_Assets(Character *chara) {
         }
     }
 }
-void Trump_Attack(Elements *self) {
-    if (!self || !self->pDerivedObj) return;
-    
+void Trump_Attack(Elements *self) {    
     Character *chara = (Character *)self->pDerivedObj;
     if (chara->new_proj) return;
-    if (chara->atk_level < 50) _Trump_Attack_0(self);
-    else if (chara->atk_level >= 50 && chara->atk_level < 150) _Trump_Attack_1(self);
+    if (chara->atk_level < 1000) _Trump_Attack_0(self);
+    else if (chara->atk_level >= 1000 && chara->atk_level < 10000) _Trump_Attack_1(self);
     else  _Trump_Attack_2(self);
 }
 
@@ -49,12 +49,12 @@ void _Trump_Attack_0(Elements *self) {
     float angle_deg = chara->atk_angle;
     float power = chara->atk_power;
 
-    int x = chara->x + chara->width / 2 - GOLF_WIDTH / 2;
-    int y = chara->y + chara->height / 2 - GOLF_HEIGHT / 2;
+    int x = chara->x + chara->width / 2 - MAGA_WIDTH / 2;
+    int y = chara->y + chara->height / 2 - MAGA_HEIGHT / 2;
 
     if (!chara->dir) angle_deg = 180.0f - angle_deg;
     
-    Elements *proj = New_Projectile(Projectile_L, x, y, angle_deg, power, GOLF, chara->player);
+    Elements *proj = New_Projectile(Projectile_L, x, y - 16, angle_deg, power, MAGA, chara->player);
     _Register_elements(scene, proj);
     chara->new_proj = true;
 
@@ -67,17 +67,21 @@ void _Trump_Attack_1(Elements *self) {
     float angle_deg = chara->atk_angle;
     float power = chara->atk_power;
 
-    int x = chara->x + chara->width / 2 - GOLF_WIDTH / 2;
-    int y = chara->y + chara->height / 2 - GOLF_HEIGHT / 2;
+    int x = chara->x + chara->width / 2 - DEPORT_WIDTH / 2;
+    int y = chara->y + chara->height / 2 - DEPORT_HEIGHT / 2;
 
     if (!chara->dir) angle_deg = 180.0f - angle_deg;
 
-    Elements *proj_0 = New_Projectile(Projectile_L, x, y, angle_deg + 0 , power, TWITTER, chara->player);
-    Elements *proj_1 = New_Projectile(Projectile_L, x, y, angle_deg + 10, power, TWITTER, chara->player);
-    Elements *proj_2 = New_Projectile(Projectile_L, x, y, angle_deg - 10, power, TWITTER, chara->player);
+    Elements *proj_0 = New_Projectile(Projectile_L, x, y - 16, angle_deg +  0, power, DEPORT, chara->player);
+    Elements *proj_1 = New_Projectile(Projectile_L, x, y - 16, angle_deg +  5, power, DEPORT, chara->player);
+    Elements *proj_2 = New_Projectile(Projectile_L, x, y - 16, angle_deg + 10, power, DEPORT, chara->player);
+    Elements *proj_3 = New_Projectile(Projectile_L, x, y - 16, angle_deg -  5, power, DEPORT, chara->player);
+    Elements *proj_4 = New_Projectile(Projectile_L, x, y - 16, angle_deg - 10, power, DEPORT, chara->player);
     _Register_elements(scene, proj_0);
     _Register_elements(scene, proj_1);
     _Register_elements(scene, proj_2);
+    _Register_elements(scene, proj_3);
+    _Register_elements(scene, proj_4);
 
     chara->new_proj = true;
 
@@ -85,21 +89,20 @@ void _Trump_Attack_1(Elements *self) {
 }
 
 void _Trump_Attack_2(Elements *self) {
-    // Character *chara = (Character *)self->pDerivedObj;
-    // chara->atk_angle = -60.0f;
-    // chara->atk_power = 12.0f;
+    Character *chara = (Character *)self->pDerivedObj;
 
-    // float angle_deg = chara->atk_angle;
-    // float power = chara->atk_power;
+    float angle_deg = chara->atk_angle;
+    float power = chara->atk_power;
 
-    // int x = chara->x + chara->width / 2;
-    // int y = chara->y + chara->height / 2;
+    int x = chara->x + chara->width / 2 - DUMP_TRUCK_HEIGHT / 2;
+    int y = chara->y + chara->height / 2 - DUMP_TRUCK_HEIGHT / 2;
 
-    // if (!chara->dir) angle_deg = 180.0f - angle_deg;
+    if (!chara->dir) angle_deg = 180.0f - angle_deg;
 
-    // Elements *proj = New_Projectile(Projectile_L, x, y, angle_deg, power, 100, false, true);
-    // _Register_elements(scene, proj);
-    // chara->new_proj = true;
+    Elements *proj = New_Projectile(Projectile_L, x, y - 16, angle_deg, power, DUMP_TRUCK, chara->player);
+    _Register_elements(scene, proj);
 
-    // al_play_sample_instance(chara->sounds[SOUND_ATTACK_2]);
+    chara->new_proj = true;
+
+    al_play_sample_instance(chara->sounds[SOUND_ATTACK_2]);
 }

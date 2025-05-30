@@ -1,6 +1,7 @@
 #include "ground.h"
 #include "../shapes/Rectangle.h"
 #include <stdio.h>
+#include <allegro5/allegro_primitives.h>
 
 Elements *New_Ground(int who, int label)
 {
@@ -15,21 +16,25 @@ Elements *New_Ground(int who, int label)
 
     if (who == 0)
     {
-        image_path = "assets/map/white_house_ground.png";
-        mask_path  = "assets/map/white_house_mask.txt";
+        image_path = "assets/maps/white_house_ground.png";
+        mask_path  = "assets/maps/white_house_mask.txt";
     }
     else if (who == 1)
     {
-        image_path = "assets/map/tiananmen_square_ground.png";
-        mask_path  = "assets/map/tiananmen_square_mask.txt";
+        image_path = "assets/maps/tiananmen_square_ground.png";
+        mask_path  = "assets/maps/tiananmen_square_mask.txt";
     }
 
     // Load image
-    pDerivedObj->tileset = al_load_bitmap(image_path);
-    if (!pDerivedObj->tileset) {
+    ALLEGRO_BITMAP *original = al_load_bitmap(image_path);
+    if (!original) {
         fprintf(stderr, "Failed to load image: %s\n", image_path);
         exit(1);
     }
+
+    // Convert to writable format (important!)
+    pDerivedObj->tileset = al_clone_bitmap(original);
+    al_destroy_bitmap(original);
 
     pDerivedObj->width = al_get_bitmap_width(pDerivedObj->tileset);
     pDerivedObj->height = al_get_bitmap_height(pDerivedObj->tileset);
@@ -56,10 +61,6 @@ Elements *New_Ground(int who, int label)
             int tx = j * TILE_WIDTH;
             int ty = i * TILE_HEIGHT;
 
-            pDerivedObj->tiles[i][j] = al_create_sub_bitmap(
-                pDerivedObj->tileset, tx, ty, TILE_WIDTH, TILE_HEIGHT
-            );
-
             if (pDerivedObj->active[i][j]) {
                 pDerivedObj->hitboxes[i][j] = New_Rectangle(
                     pDerivedObj->x + tx,
@@ -67,6 +68,7 @@ Elements *New_Ground(int who, int label)
                     pDerivedObj->x + tx + TILE_WIDTH,
                     pDerivedObj->y + ty + TILE_HEIGHT
                 );
+
             } else {
                 pDerivedObj->hitboxes[i][j] = NULL;
             }
@@ -91,18 +93,7 @@ void Ground_interact(Elements *self) {
 void Ground_draw(Elements *self) {
     Ground *Obj = (Ground *)(self->pDerivedObj);
 
-    for (int i = 0; i < MAP_ROWS; i++) {
-        for (int j = 0; j < MAP_COLS; j++) {
-            if (!Obj->active[i][j]) continue;
-
-            al_draw_bitmap(
-                Obj->tiles[i][j],
-                Obj->x + j * TILE_WIDTH,
-                Obj->y + i * TILE_HEIGHT,
-                0
-            );
-        }
-    }
+    al_draw_bitmap(Obj->tileset, Obj->x, Obj->y, 0);
 }
 void Ground_destory(Elements *self) {
     Ground *Obj = (Ground *)(self->pDerivedObj);
@@ -111,9 +102,6 @@ void Ground_destory(Elements *self) {
 
     for (int i = 0; i < MAP_ROWS; i++) {
         for (int j = 0; j < MAP_COLS; j++) {
-            if (Obj->tiles[i][j])
-                al_destroy_bitmap(Obj->tiles[i][j]);
-
             if (Obj->hitboxes[i][j])
                 free(Obj->hitboxes[i][j]);
         }
@@ -121,4 +109,29 @@ void Ground_destory(Elements *self) {
 
     free(Obj);
     free(self);
+}
+void Ground_Erase_Tile(Ground *ground, int row, int col) {
+    if (row < 0 || row >= MAP_ROWS || col < 0 || col >= MAP_COLS) return;
+    if (!ground->active[row][col]) return;
+
+    // Set target drawing to the tileset bitmap
+    al_set_target_bitmap(ground->tileset);
+
+    int tx = col * TILE_WIDTH;
+    int ty = row * TILE_HEIGHT;
+
+    // Set blend mode to replace pixels (no blending)
+    al_set_blender(ALLEGRO_ADD, ALLEGRO_ONE, ALLEGRO_ZERO);
+    ALLEGRO_COLOR transparent = al_map_rgba(0, 0, 0, 0);
+    al_draw_filled_rectangle(tx, ty, tx + TILE_WIDTH, ty + TILE_HEIGHT, transparent);
+    al_set_blender(ALLEGRO_ADD, ALLEGRO_ALPHA, ALLEGRO_INVERSE_ALPHA);
+    al_set_target_backbuffer(al_get_current_display());
+
+    // Remove hitbox
+    if (ground->hitboxes[row][col]) {
+        free(ground->hitboxes[row][col]);
+        ground->hitboxes[row][col] = NULL;
+    }
+
+    ground->active[row][col] = 0;
 }

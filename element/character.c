@@ -110,21 +110,21 @@ void Character_update(Elements *self) {
         if (chara->state != ATK) chara->state = IDLE;
     }
 
-    if (((key_state[ALLEGRO_KEY_Q] && self->label == 1) || (key_state[ALLEGRO_KEY_RSHIFT] && self->label == 2)) && chara->state == IDLE) {
+    if (((key_state[ALLEGRO_KEY_Q] && self->label == 1) || (key_state[ALLEGRO_KEY_SLASH] && self->label == 2)) && chara->state == IDLE) {
         if (chara->charging) {
             chara->atk_power += ATTACK_POWER_CHARGE_SPEED;
             if (chara->atk_power >= ATTACK_POWER_MAX) {
                 chara->atk_power = ATTACK_POWER_MAX;
                 chara->charging = false;  // Start going down
             }
-            printf("\rPlayer: %d Power: %f", chara->player, chara->atk_power);
+            // printf("\rPlayer: %d Power: %f", chara->player, chara->atk_power);
         } else {
             chara->atk_power -= ATTACK_POWER_CHARGE_SPEED;
             if (chara->atk_power <= ATTACK_POWER_MIN) {
                 chara->atk_power = ATTACK_POWER_MIN;
                 chara->charging = true;  // Start going up
             }
-            printf("\rPlayer: %d Power: %f", chara->player, chara->atk_power);
+            // printf("\rPlayer: %d Power: %f", chara->player, chara->atk_power);
         }
         chara->was_charging = true;
     } else {
@@ -192,7 +192,7 @@ void Character_interact(Elements *self) {}
 void Character_Attack(Elements *self) {
     Character *chara = (Character *)self->pDerivedObj;
     if (chara->who == 0)        Trump_Attack(self);
-    else if (chara->who == 0)   JinPing_Attack(self);
+    else if (chara->who == 1)   JinPing_Attack(self);
     else                        GuoDong_Attack(self);
 }
 void Character_Hurt(Elements *self, int damage) {
@@ -215,17 +215,19 @@ void Character_Hurt(Elements *self, int damage) {
     // Gain Furry
     Character_Furry(self, damage);
 
-    printf("\nPlayer: %d Hp: %d\n", chara->player, chara->hp);
+    // printf("\nPlayer: %d Hp: %d\n", chara->player, chara->hp);
 }
 void Character_Furry(Elements *self, int amount) 
 {
     Character *chara = (Character *)self->pDerivedObj;
     chara->atk_furry += amount;
-     printf("\nPlayer: %d Furry: %d\n", chara->player, chara->atk_furry);
+    if (chara->atk_furry >= FURRY_MAX) chara->atk_furry = FURRY_MAX;
+    //  printf("\nPlayer: %d Furry: %d\n", chara->player, chara->atk_furry);
 }
 void Character_Level(Elements *self, int amount)
 {
     Character *chara = (Character *)self->pDerivedObj;
     chara->atk_level += amount;
-    printf("\nPlayer: %d Level: %d\n", chara->player, chara->atk_level);
+    if (chara->atk_level >= EXP_MAX) chara->atk_level = EXP_MAX;
+    // printf("\nPlayer: %d Level: %d\n", chara->player, chara->atk_level);
 }

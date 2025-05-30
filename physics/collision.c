@@ -39,6 +39,8 @@ void Physics_Apply_Collision(float             *vx,
             if (fabs(*vx) < 0.5f) *vx = 0.0f;
         } else if (!*in_air && wall_height > 0) {
             update_pos(self, move_x, -wall_height);  // Step up
+            *vx *= *bounce_decay;
+            if (fabs(*vx) < 0.5f) *vx = 0.0f;
         }
     }
 
@@ -57,6 +59,8 @@ void Physics_Apply_Collision(float             *vx,
             if (fabs(*vx) < 0.5f) *vx = 0.0f;
         } else if (!*in_air && wall_height > 0) {
             update_pos(self, move_x, -wall_height);
+            *vx *= *bounce_decay;
+            if (fabs(*vx) < 0.5f) *vx = 0.0f;
         }
     }
 
