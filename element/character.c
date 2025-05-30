@@ -144,7 +144,7 @@ void Character_update(Elements *self) {
     if (chara->state == ATK) {
         if (chara->gif_status[ATK]->display_index == 2 && !chara->new_proj) {
             Character_Attack(self);
-            chara->atk_power = ATTACK_POWER_MIN;
+            chara->atk_power = 10.0f;
         }
 
         if (chara->gif_status[ATK]->done) {

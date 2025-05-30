@@ -12,7 +12,7 @@ typedef enum EleType
     Player1_L,
     Player2_L,
     Projectile_L,
-    Projectile2_L,
+    Floor_L,
 } EleType;
 
 typedef enum CharacterWho
@@ -38,5 +38,6 @@ Scene *New_GameScene(int label);
 void game_scene_update(Scene *self);
 void game_scene_draw(Scene *self);
 void game_scene_destroy(Scene *self);
+void draw_attack_indicator(Elements *p1, ALLEGRO_COLOR color);
 
 #endif

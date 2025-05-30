@@ -2,10 +2,12 @@
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_ttf.h>
+#include <math.h>
 #include "gamescene.h"
 #include "../element/element.h"
 #include "../element/character.h"
 #include "../element/ground.h"
+#include "../element/floor.h"
 #include "../element/projectile.h"
 /*
    [GameScene function]
@@ -23,6 +25,7 @@ Scene *New_GameScene(int label)
     _Register_elements(pObj, New_Ground(White_House, Ground_L));
     _Register_elements(pObj, New_Character(Trump, Player1_L));
     _Register_elements(pObj, New_Character(JinPing, Player2_L));
+    _Register_elements(pObj, New_Floor(Floor_L));
     // setting derived object function
     pObj->Update = game_scene_update;
     pObj->Draw = game_scene_draw;
@@ -139,6 +142,9 @@ void game_scene_draw(Scene *self)
     al_draw_filled_rounded_rectangle(1800, 800, 1855, 1010, 10, 10, al_map_rgb(50, 50, 50));
     al_draw_filled_rounded_rectangle(1805, 805, 1850, 1005, 8, 8, al_map_rgb(100, 100, 100));
     al_draw_filled_rounded_rectangle(1805, 995 - power_p2, 1850, 1005, 8, 8, al_map_rgb(255,215,0));
+
+    draw_attack_indicator(p1, al_map_rgb(220,20,60)); // gray triangle for c1
+    draw_attack_indicator(p2, al_map_rgb(220,20,60)); // gray triangle for c1
 }
 void game_scene_destroy(Scene *self)
 {
@@ -153,4 +159,41 @@ void game_scene_destroy(Scene *self)
     }
     free(Obj);
     free(self);
+}
+void draw_attack_indicator(Elements *p1, ALLEGRO_COLOR color) {
+    Character *chara = (Character *)(p1->pDerivedObj);
+    float angle_deg = chara->atk_angle;
+    
+    if (!chara->dir) angle_deg = 180.0f - angle_deg;
+    float angle_rad = angle_deg * (3.14159f / 180.0f);
+    float power_scale = chara->atk_power * 5; // you can scale this further if needed
+
+    int x = chara->x + chara->width / 2;
+    int y = chara->y + chara->height / 2 - 16;
+    if (!chara->dir) {
+        x -= 48;
+    } else {
+        x += 48;
+    }
+
+    // tip of the triangle (direction of attack)
+    float tip_x = x + cos(angle_rad) * power_scale;
+    float tip_y = y + sin(angle_rad) * power_scale;
+
+    // base width of the triangle
+    float offset = 4.0; // you can adjust this for wider/narrower indicators
+
+    // perpendicular angle for base
+    float perp_angle = angle_rad + 3.14159f / 2;
+    float base_x1 = x + cos(perp_angle) * offset;
+    float base_y1 = y + sin(perp_angle) * offset;
+    float base_x2 = x - cos(perp_angle) * offset;
+    float base_y2 = y - sin(perp_angle) * offset;
+
+    al_draw_filled_triangle(
+        tip_x, tip_y,    // tip of triangle
+        base_x1, base_y1, // base left
+        base_x2, base_y2, // base right
+        color
+    );
 }
