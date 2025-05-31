@@ -92,6 +92,24 @@ Elements *New_Projectile(int label, int x, int y, float angle_deg, float power, 
             fprintf(stderr, "Unknown 'who' value: %d\n", who);
             break;
     }
+    const char *sound_files[1] = {
+        "bomb.mp3"
+    };
+
+    for (int i = 0; i < 1; i++) {
+        char sound_path[64];
+        snprintf(sound_path, sizeof(sound_path), "assets/sound/%s", sound_files[i]);
+
+        ALLEGRO_SAMPLE *sample = al_load_sample(sound_path);
+        if (sample) {
+            pDerivedObj->sounds[i] = al_create_sample_instance(sample);
+            al_set_sample_instance_playmode(pDerivedObj->sounds[i], ALLEGRO_PLAYMODE_ONCE);
+            al_attach_sample_instance_to_mixer(pDerivedObj->sounds[i], al_get_default_mixer());
+        } else {
+            pDerivedObj->sounds[i] = NULL;
+            fprintf(stderr, "Failed to load sound: %s\n", sound_path);
+        }
+    }
     
     // Setup projectile behavior
     pObj->inter_obj[pObj->inter_len++] = Ground_L;

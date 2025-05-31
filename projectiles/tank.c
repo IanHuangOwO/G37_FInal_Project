@@ -1,5 +1,7 @@
 #include "tank.h"
 #include "tank_explosion.h"
+#include <allegro5/allegro_audio.h>
+#include <allegro5/allegro_acodec.h>
 
 #define TANK_IMG_PATH "assets/projectiles/tank.gif"
 #define TANK_DURABILITY 1
@@ -30,6 +32,7 @@ void Tank_Interaction_Character(Elements *self, Elements *tar)
 
     Elements *explode = New_Projectile(Projectile_L, center_x, center_y, 0, 0, TANK_EXPLOSION, proj->player);
     _Register_elements(scene, explode);
+    al_play_sample_instance(proj->sounds[SOUND_BOMB]);
 
     proj->durability --;
     proj->action_cooldown = TANK_ACTION_COOLDOWN;
@@ -42,6 +45,7 @@ void Tank_Interaction_Ground(Elements *self, Elements *tar) {
 
     Elements *explode = New_Projectile(Projectile_L, center_x, center_y, 0, 0, TANK_EXPLOSION, proj->player);
     _Register_elements(scene, explode);
+    al_play_sample_instance(proj->sounds[SOUND_BOMB]);
 
     proj->durability --;
     proj->action_cooldown = TANK_ACTION_COOLDOWN;

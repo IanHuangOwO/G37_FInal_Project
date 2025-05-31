@@ -1,5 +1,7 @@
 #include "poop.h"
 #include "poop_explosion.h"
+#include <allegro5/allegro_audio.h>
+#include <allegro5/allegro_acodec.h>
 
 #define POOP_IMG_PATH "assets/projectiles/poop.gif"
 #define POOP_DURABILITY 3
@@ -30,6 +32,7 @@ void Poop_Interaction_Character(Elements *self, Elements *tar)
 
     Elements *explode = New_Projectile(Projectile_L, center_x, center_y, 0, 0, POOP_EXPLOSION, proj->player);
     _Register_elements(scene, explode);
+    al_play_sample_instance(proj->sounds[SOUND_BOMB]);
 
     proj->durability --;
     proj->action_cooldown = POOP_ACTION_COOLDOWN;
@@ -42,6 +45,7 @@ void Poop_Interaction_Ground(Elements *self, Elements *tar) {
 
     Elements *explode = New_Projectile(Projectile_L, center_x, center_y, 0, 0, POOP_EXPLOSION, proj->player);
     _Register_elements(scene, explode);
+    al_play_sample_instance(proj->sounds[SOUND_BOMB]);
 
     proj->durability --;
     proj->action_cooldown = POOP_ACTION_COOLDOWN;

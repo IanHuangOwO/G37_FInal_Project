@@ -1,5 +1,7 @@
 #include "crown.h"
 #include "crown_explosion.h"
+#include <allegro5/allegro_audio.h>
+#include <allegro5/allegro_acodec.h>
 
 #define CROWN_IMG_PATH "assets/projectiles/crown.gif"
 #define CROWN_DURABILITY 1
@@ -31,6 +33,8 @@ void Crown_Interaction_Character(Elements *self, Elements *tar)
     Elements *explode = New_Projectile(Projectile_L, center_x, center_y, 0, 0, CROWN_EXPLOSION, proj->player);
     _Register_elements(scene, explode);
 
+    al_play_sample_instance(proj->sounds[SOUND_BOMB]);
+
     proj->durability --;
     proj->action_cooldown = CROWN_ACTION_COOLDOWN;
     return;
@@ -42,6 +46,8 @@ void Crown_Interaction_Ground(Elements *self, Elements *tar) {
 
     Elements *explode = New_Projectile(Projectile_L, center_x, center_y, 0, 0, CROWN_EXPLOSION, proj->player);
     _Register_elements(scene, explode);
+
+    al_play_sample_instance(proj->sounds[SOUND_BOMB]);
 
     proj->durability --;
     proj->action_cooldown = CROWN_ACTION_COOLDOWN;

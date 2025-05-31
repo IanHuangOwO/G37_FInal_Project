@@ -10,7 +10,7 @@ void create_scene(SceneType type)
         scene = New_Menu(Menu_L);
         break;
     case GameScene_L:
-        scene = New_GameScene(GameScene_L);
+        scene = New_GameScene(GameScene_L, Trump, JinPing, Tiananmen_Square);
         break;
     default:
         break;

@@ -1,5 +1,7 @@
 #include "deport.h"
 #include "deport_explosion.h"
+#include <allegro5/allegro_audio.h>
+#include <allegro5/allegro_acodec.h>
 
 #define DEPORT_IMG_PATH "assets/projectiles/deport.gif"
 #define DEPORT_DURABILITY 1
@@ -36,6 +38,8 @@ void Deport_Interaction_Character(Elements *self, Elements *tar)
     chara->vy = -proj->vy * 0.8;
     _Character_update_position(tar, 1, 1);
 
+    al_play_sample_instance(proj->sounds[SOUND_BOMB]);
+
     proj->durability --;
     proj->action_cooldown = DEPORT_ACTION_COOLDOWN;
     return;
@@ -47,6 +51,8 @@ void Deport_Interaction_Ground(Elements *self, Elements *tar) {
 
     Elements *explode = New_Projectile(Projectile_L, center_x, center_y, 0, 0, DEPORT_EXPLOSION, proj->player);
     _Register_elements(scene, explode);
+
+    al_play_sample_instance(proj->sounds[SOUND_BOMB]);
 
     proj->durability --;
     proj->action_cooldown = DEPORT_ACTION_COOLDOWN;

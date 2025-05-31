@@ -31,9 +31,9 @@ Elements *New_Character(int who, int label)
     // initial the geometric information of character
     pDerivedObj->width = pDerivedObj->gif_status[0]->width;
     pDerivedObj->height = pDerivedObj->gif_status[0]->height;
-    if (label == 1) pDerivedObj->x = 300;
-    else pDerivedObj->x = 1620;
-    pDerivedObj->y = 0;
+    if (label == 1) pDerivedObj->x = 200;
+    else pDerivedObj->x = 1720;
+    pDerivedObj->y = 150;
     pDerivedObj->vx = 0;
     pDerivedObj->vy = 0; 
     pDerivedObj->bounce_decay = 0;
@@ -71,7 +71,7 @@ Elements *New_Character(int who, int label)
 }
 void Character_update(Elements *self) {
     Character *chara = (Character *)self->pDerivedObj;
-    
+
     Contact_Check_To_Character(self);  
 
     // Determine if standing on the ground using contact info
@@ -83,61 +83,63 @@ void Character_update(Elements *self) {
     //     chara->vy = -8f;
     //     chara->is_in_air = true;
     // }
-
-    // Arrage Angle 
-    if ((key_state[ALLEGRO_KEY_W] && self->label == 1) || (key_state[ALLEGRO_KEY_UP] && self->label == 2)) {
-        chara->atk_angle -= ATTACK_ANGLE_CHARGE_SPEED;
-        if (chara->atk_angle < ATTACK_ANGLE_MIN) chara->atk_angle = ATTACK_ANGLE_MAX;
-        printf("\rPlayer: %d Angle: %f", chara->player, -chara->atk_angle);
-    } 
-    else if ((key_state[ALLEGRO_KEY_S] && self->label == 1) || (key_state[ALLEGRO_KEY_DOWN] && self->label == 2)) {
-        chara->atk_angle += ATTACK_ANGLE_CHARGE_SPEED;
-        if (chara->atk_angle > ATTACK_ANGLE_MAX) chara->atk_angle = ATTACK_ANGLE_MAX;
-        printf("\rPlayer: %d Angle: %f", chara->player, -chara->atk_angle);
-    }
-
-    // Horizontal movement
-    if ((key_state[ALLEGRO_KEY_A] && self->label == 1) || (key_state[ALLEGRO_KEY_LEFT] && self->label == 2)) {
-        chara->dir = false;
-        chara->vx = -MOVE_SPEED;  // ← store velocity, not move directly
-        if (chara->state != ATK) chara->state = MOVE;
-    } else if ((key_state[ALLEGRO_KEY_D] && self->label == 1) || (key_state[ALLEGRO_KEY_RIGHT] && self->label == 2)) {
-        chara->dir = true;
-        chara->vx = MOVE_SPEED;
-        if (chara->state != ATK) chara->state = MOVE;
-    } else {
-        chara->vx = 0;
-        if (chara->state != ATK) chara->state = IDLE;
-    }
-
-    if (((key_state[ALLEGRO_KEY_Q] && self->label == 1) || (key_state[ALLEGRO_KEY_SLASH] && self->label == 2)) && chara->state == IDLE) {
-        if (chara->charging) {
-            chara->atk_power += ATTACK_POWER_CHARGE_SPEED;
-            if (chara->atk_power >= ATTACK_POWER_MAX) {
-                chara->atk_power = ATTACK_POWER_MAX;
-                chara->charging = false;  // Start going down
-            }
-            // printf("\rPlayer: %d Power: %f", chara->player, chara->atk_power);
-        } else {
-            chara->atk_power -= ATTACK_POWER_CHARGE_SPEED;
-            if (chara->atk_power <= ATTACK_POWER_MIN) {
-                chara->atk_power = ATTACK_POWER_MIN;
-                chara->charging = true;  // Start going up
-            }
-            // printf("\rPlayer: %d Power: %f", chara->player, chara->atk_power);
+    // printf("%d\n", gc->game_start_timer);
+    if (chara->player_now == chara->player) {
+        // Arrage Angle 
+        if ((key_state[ALLEGRO_KEY_W] && self->label == 1) || (key_state[ALLEGRO_KEY_UP] && self->label == 2)) {
+            chara->atk_angle -= ATTACK_ANGLE_CHARGE_SPEED;
+            if (chara->atk_angle < ATTACK_ANGLE_MIN) chara->atk_angle = ATTACK_ANGLE_MAX;
+            // printf("\rPlayer: %d Angle: %f", chara->player, -chara->atk_angle);
+        } 
+        else if ((key_state[ALLEGRO_KEY_S] && self->label == 1) || (key_state[ALLEGRO_KEY_DOWN] && self->label == 2)) {
+            chara->atk_angle += ATTACK_ANGLE_CHARGE_SPEED;
+            if (chara->atk_angle > ATTACK_ANGLE_MAX) chara->atk_angle = ATTACK_ANGLE_MAX;
+            // printf("\rPlayer: %d Angle: %f", chara->player, -chara->atk_angle);
         }
-        chara->was_charging = true;
-    } else {
-        if (chara->was_charging) {
-            chara->state = ATK;
-            chara->new_proj = false;
-            
-            // reset animation
-            if (chara->gif_status[ATK]) {
-                chara->gif_status[ATK]->display_index = 0;
-                chara->gif_status[ATK]->done = false;
+
+        // Horizontal movement
+        if ((key_state[ALLEGRO_KEY_A] && self->label == 1) || (key_state[ALLEGRO_KEY_LEFT] && self->label == 2)) {
+            chara->dir = false;
+            chara->vx = -MOVE_SPEED;  // ← store velocity, not move directly
+            if (chara->state != ATK) chara->state = MOVE;
+        } else if ((key_state[ALLEGRO_KEY_D] && self->label == 1) || (key_state[ALLEGRO_KEY_RIGHT] && self->label == 2)) {
+            chara->dir = true;
+            chara->vx = MOVE_SPEED;
+            if (chara->state != ATK) chara->state = MOVE;
+        } else {
+            chara->vx = 0;
+            if (chara->state != ATK) chara->state = IDLE;
+        }
+
+        if (((key_state[ALLEGRO_KEY_Q] && self->label == 1) || (key_state[ALLEGRO_KEY_SLASH] && self->label == 2)) && chara->state == IDLE) {
+            if (chara->charging) {
+                chara->atk_power += ATTACK_POWER_CHARGE_SPEED;
+                if (chara->atk_power >= ATTACK_POWER_MAX) {
+                    chara->atk_power = ATTACK_POWER_MAX;
+                    chara->charging = false;  // Start going down
+                }
+                // printf("\rPlayer: %d Power: %f", chara->player, chara->atk_power);
+            } else {
+                chara->atk_power -= ATTACK_POWER_CHARGE_SPEED;
+                if (chara->atk_power <= ATTACK_POWER_MIN) {
+                    chara->atk_power = ATTACK_POWER_MIN;
+                    chara->charging = true;  // Start going up
+                }
+                // printf("\rPlayer: %d Power: %f", chara->player, chara->atk_power);
             }
-            chara->was_charging = false;
+            chara->was_charging = true;
+        } else {
+            if (chara->was_charging) {
+                chara->state = ATK;
+                chara->new_proj = false;
+                
+                // reset animation
+                if (chara->gif_status[ATK]) {
+                    chara->gif_status[ATK]->display_index = 0;
+                    chara->gif_status[ATK]->done = false;
+                }
+                chara->was_charging = false;
+            }
         }
     }
 

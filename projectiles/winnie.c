@@ -1,5 +1,7 @@
 #include "winnie.h"
 #include "winnie_explosion.h"
+#include <allegro5/allegro_audio.h>
+#include <allegro5/allegro_acodec.h>
 
 #define WINNIE_IMG_PATH "assets/projectiles/winnie.gif"
 #define WINNIE_DURABILITY 5
@@ -32,6 +34,7 @@ void Winnie_Interaction_Character(Elements *self, Elements *tar)
 
     Elements *explode = New_Projectile(Projectile_L, center_x, center_y, 0, 0, WINNIE_EXPLOSION, proj->player);
     _Register_elements(scene, explode);
+    al_play_sample_instance(proj->sounds[SOUND_BOMB]);
     
     chara->vy = -proj->vy * 0.8;
     _Character_update_position(tar, 1, 1);
@@ -47,6 +50,7 @@ void Winnie_Interaction_Ground(Elements *self, Elements *tar) {
 
     Elements *explode = New_Projectile(Projectile_L, center_x, center_y, 0, 0, WINNIE_EXPLOSION, proj->player);
     _Register_elements(scene, explode);
+    al_play_sample_instance(proj->sounds[SOUND_BOMB]);
 
     proj->durability --;
     proj->action_cooldown = WINNIE_ACTION_COOLDOWN;

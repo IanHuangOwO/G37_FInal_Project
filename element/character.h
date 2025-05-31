@@ -48,12 +48,14 @@ typedef struct _Character
     bool is_in_air;                     // true: character is airborn
     int who;                            // The character type
     int player;
+    int player_now;
     int state;                          // the state of character
     int anime;                          // counting the time of animation
     int anime_time;                     // indicate how long the animation
     ALGIF_ANIMATION *gif_status[4];     // gif for each state. 0: stop, 1: move, 2:attack 3:hurt
     ALLEGRO_SAMPLE_INSTANCE *sounds[4]; 
     float atk_power;
+    bool attack_ok;
     bool was_charging;
     bool charging;
     float atk_angle;

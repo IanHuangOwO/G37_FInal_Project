@@ -1,5 +1,7 @@
 #include "dump_truck.h"
 #include "dump_truck_explosion.h"
+#include <allegro5/allegro_audio.h>
+#include <allegro5/allegro_acodec.h>
 
 #define DUMP_TRUCK_IMG_PATH "assets/projectiles/dump_truck.gif"
 #define DUMP_TRUCK_DURABILITY 1
@@ -58,6 +60,8 @@ void Dump_Truck_Interaction_Ground(Elements *self, Elements *tar) {
     _Register_elements(scene, poop_5);
     _Register_elements(scene, poop_6);
     _Register_elements(scene, poop_7);
+
+    al_play_sample_instance(proj->sounds[SOUND_BOMB]);
 
     proj->durability --;
     proj->action_cooldown = DUMP_TRUCK_ACTION_COOLDOWN;

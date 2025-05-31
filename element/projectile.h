@@ -1,5 +1,6 @@
 #ifndef Projectile_H_INCLUDED
 #define Projectile_H_INCLUDED
+#include <allegro5/allegro_audio.h>
 #include "element.h"
 #include "../physics/contact.h"
 #include "../shapes/Shape.h"
@@ -32,6 +33,10 @@ typedef enum ProjectileWho
     
 } ProjectileWho;
 
+typedef enum {
+    SOUND_BOMB = 0,
+} ProjectileSoundIndex;
+
 typedef struct _Projectile
 {
     // Identity of the projectile
@@ -56,6 +61,7 @@ typedef struct _Projectile
     int anime;
     int anime_time;
     ALGIF_ANIMATION *gif;
+    ALLEGRO_SAMPLE_INSTANCE *sounds[1];
 } Projectile;
 
 Elements *New_Projectile(int label, int x, int y, float angle_deg, float power, int who, int player);
