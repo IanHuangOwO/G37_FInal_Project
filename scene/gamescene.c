@@ -64,7 +64,11 @@ void game_scene_update(Scene *self)
             _Remove_elements(self, ele);
     }
 
-    _game_round_engine(self);
+    if (key_state[ALLEGRO_KEY_0])
+    {
+        self->scene_end = true;
+        window = 2;
+    }
 }
 void game_scene_draw(Scene *self)
 {
@@ -199,7 +203,7 @@ void _draw_player_stats(Scene *self, int label, int x, int y, bool flip) {
     float exp   = (float)c->atk_level / EXP_MAX * 490.0f;
     float furry = (float)c->atk_furry / FURRY_MAX * 490.0f;
     float power = (float)c->atk_power / ATTACK_POWER_MAX * 190.0f;
-    
+
     int w_bar = 500, h_bar = 30;
     int w_power = 50;
 
