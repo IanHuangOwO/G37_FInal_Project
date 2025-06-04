@@ -35,6 +35,27 @@ Scene *New_GameScene(int label, int player1_who, int player2_who, int backgorund
     _Register_elements(pObj, New_Character(player2_who, Player2_L));
     _Register_elements(pObj, New_Floor(Floor_L));
 
+    // Load sound
+    ALLEGRO_SAMPLE *song;
+    song = al_load_sample("assets/sound/bgm.mp3");
+    al_reserve_samples(20);
+    pDerivedObj->bgm = al_create_sample_instance(song);
+    // Loop the song until the display closes
+    al_set_sample_instance_playmode(pDerivedObj->bgm, ALLEGRO_PLAYMODE_LOOP);
+    al_restore_default_mixer();
+    al_attach_sample_instance_to_mixer(pDerivedObj->bgm, al_get_default_mixer());
+    al_set_sample_instance_gain(pDerivedObj->bgm, 0.05);
+
+    // Load sound
+    song = al_load_sample("assets/sound/countdown.wav");
+    al_reserve_samples(20);
+    pDerivedObj->count = al_create_sample_instance(song);
+    // Loop the song until the display closes
+    al_set_sample_instance_playmode(pDerivedObj->count, ALLEGRO_PLAYMODE_ONCE);
+    al_restore_default_mixer();
+    al_attach_sample_instance_to_mixer(pDerivedObj->count, al_get_default_mixer());
+    al_set_sample_instance_gain(pDerivedObj->count, 0.2);
+
     // setting derived object function
     pObj->Update = game_scene_update;
     pObj->Draw = game_scene_draw;
@@ -89,6 +110,8 @@ void game_scene_draw(Scene *self)
 
     _draw_attack_indicator(self, Player1_L); // gray triangle for c1
     _draw_attack_indicator(self, Player2_L); // gray triangle for c1
+
+    al_play_sample_instance(pObj->bgm);
 }
 void game_scene_destroy(Scene *self)
 {
@@ -130,19 +153,21 @@ void _game_round_engine(Scene *self) {
         c1->player_now = Player1_L;
         c2->player_now = Player1_L;
         pObj->game_start_timer --;
+        al_play_sample_instance(pObj->count);
     } else {
         if (c1->was_charging || c2->was_charging) {
+            al_stop_sample_instance(pObj->count);
             ALLEGRO_BITMAP *number;
-            if (pObj->round_start_timer >= 600) {
+            if (pObj->round_start_timer >= 300) {
                 if (pObj->round_who == Player1_L) number = al_load_bitmap("assets/words/player1sturn.png");
                 else number = al_load_bitmap("assets/words/player2sturn.png");
-            } else if (pObj->round_start_timer < 600 && pObj->round_start_timer >= 480) {
+            } else if (pObj->round_start_timer < 300 && pObj->round_start_timer >= 240) {
                 number = al_load_bitmap("assets/numbers/5.png");
-            } else if (pObj->round_start_timer < 480 && pObj->round_start_timer >= 360) {
+            } else if (pObj->round_start_timer < 240 && pObj->round_start_timer >= 180) {
                 number = al_load_bitmap("assets/numbers/4.png");
-            } else if (pObj->round_start_timer < 360 && pObj->round_start_timer >= 240) {
+            } else if (pObj->round_start_timer < 180 && pObj->round_start_timer >= 120) {
                 number = al_load_bitmap("assets/numbers/3.png");
-            } else if (pObj->round_start_timer < 240 && pObj->round_start_timer >= 120) {
+            } else if (pObj->round_start_timer < 120 && pObj->round_start_timer >= 60) {
                 number = al_load_bitmap("assets/numbers/2.png");
             } else {
                 number = al_load_bitmap("assets/numbers/1.png");
@@ -161,16 +186,17 @@ void _game_round_engine(Scene *self) {
             } else {
                 ALLEGRO_BITMAP *number;
                 if (pObj->round_start_timer > 0) {
-                    if (pObj->round_start_timer >= 600) {
+                    if (pObj->round_start_timer >= 300) {
                         if (pObj->round_who == Player1_L) number = al_load_bitmap("assets/words/player1sturn.png");
                         else number = al_load_bitmap("assets/words/player2sturn.png");
-                    } else if (pObj->round_start_timer < 600 && pObj->round_start_timer >= 480) {
+                    } else if (pObj->round_start_timer < 300 && pObj->round_start_timer >= 240) {
                         number = al_load_bitmap("assets/numbers/5.png");
-                    } else if (pObj->round_start_timer < 480 && pObj->round_start_timer >= 360) {
+                    } else if (pObj->round_start_timer < 240 && pObj->round_start_timer >= 180) {
+                        al_play_sample_instance(pObj->count);
                         number = al_load_bitmap("assets/numbers/4.png");
-                    } else if (pObj->round_start_timer < 360 && pObj->round_start_timer >= 240) {
+                    } else if (pObj->round_start_timer < 180 && pObj->round_start_timer >= 120) {
                         number = al_load_bitmap("assets/numbers/3.png");
-                    } else if (pObj->round_start_timer < 240 && pObj->round_start_timer >= 120) {
+                    } else if (pObj->round_start_timer < 120 && pObj->round_start_timer >= 60) {
                         number = al_load_bitmap("assets/numbers/2.png");
                     } else {
                         number = al_load_bitmap("assets/numbers/1.png");
@@ -197,6 +223,17 @@ void _draw_player_stats(Scene *self, int label, int x, int y, bool flip) {
     GameScene *pObj = ((GameScene *)(self->pDerivedObj));
     Elements *player = _Get_label_elements(self, label).arr[0];
     Character *c = (Character *)(player->pDerivedObj);
+
+    if (c->hp <= 0) {
+        al_play_sample_instance(c->sounds[SOUND_DEATH]);
+
+        while (al_get_sample_instance_playing(c->sounds[SOUND_DEATH])) {
+            al_rest(0.01); // sleep for 10ms to prevent CPU overuse
+        }
+
+        self->scene_end = true;
+        window = 2;
+    }
 
     char text_buffer[32];
     float hp    = (float)c->hp        / HP_MAX * 500.0f;

@@ -9,7 +9,7 @@
 #include <math.h>
 
 #define MAX_GIF 4
-#define MAX_SOUNDS 4
+#define MAX_SOUNDS 7
 
 void JinPing_Load_Assets(Character *chara);
 void JinPing_Attack(Elements *self);

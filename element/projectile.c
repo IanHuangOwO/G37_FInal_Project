@@ -105,6 +105,7 @@ Elements *New_Projectile(int label, int x, int y, float angle_deg, float power, 
             pDerivedObj->sounds[i] = al_create_sample_instance(sample);
             al_set_sample_instance_playmode(pDerivedObj->sounds[i], ALLEGRO_PLAYMODE_ONCE);
             al_attach_sample_instance_to_mixer(pDerivedObj->sounds[i], al_get_default_mixer());
+            al_set_sample_instance_gain(pDerivedObj->sounds[i], 0.1);
         } else {
             pDerivedObj->sounds[i] = NULL;
             fprintf(stderr, "Failed to load sound: %s\n", sound_path);

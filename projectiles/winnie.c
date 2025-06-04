@@ -39,7 +39,7 @@ void Winnie_Interaction_Character(Elements *self, Elements *tar)
     chara->vy = -proj->vy * 0.8;
     _Character_update_position(tar, 1, 1);
 
-    proj->durability --;
+    proj->durability = 0;
     proj->action_cooldown = WINNIE_ACTION_COOLDOWN;
     return;
 }

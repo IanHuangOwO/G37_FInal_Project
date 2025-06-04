@@ -10,7 +10,7 @@
 #include <math.h>
 
 #define MAX_GIF 4
-#define MAX_SOUNDS 4
+#define MAX_SOUNDS 7
 
 void Trump_Load_Assets(Character *chara);
 void Trump_Attack(Elements *self);

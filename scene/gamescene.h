@@ -1,13 +1,14 @@
 #ifndef GAMESCENE_H_INCLUDED
 #define GAMESCENE_H_INCLUDED
 #include "scene.h"
+#include <allegro5/allegro_audio.h>
 #include <allegro5/allegro_font.h>
 
 /*
    [game scene object]
 */
 
-#define ROUND_START_TIME 660
+#define ROUND_START_TIME 360
 #define ATTACK_START_TIME 300
 
 typedef enum EleType
@@ -39,8 +40,9 @@ typedef struct _GameScene
     int attack_start_timer;
     int round_who;
     ALLEGRO_FONT *font;
+    ALLEGRO_SAMPLE_INSTANCE *bgm;
+    ALLEGRO_SAMPLE_INSTANCE *count;
     ALLEGRO_BITMAP *background;
-
 } GameScene;
 Scene *New_GameScene(int label, int player1_who, int player2_who, int backgorund_who);
 void game_scene_update(Scene *self);

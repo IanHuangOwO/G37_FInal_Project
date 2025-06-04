@@ -36,6 +36,9 @@ typedef enum {
     SOUND_ATTACK_1 = 1,
     SOUND_ATTACK_2 = 2,
     SOUND_ATTACK_3 = 3,
+    SOUND_ATTACK_CHARGING = 4,
+    SOUND_HURT = 5,
+    SOUND_DEATH = 6,
 } SoundIndex;
 
 typedef struct _Character
@@ -53,7 +56,7 @@ typedef struct _Character
     int anime;                          // counting the time of animation
     int anime_time;                     // indicate how long the animation
     ALGIF_ANIMATION *gif_status[4];     // gif for each state. 0: stop, 1: move, 2:attack 3:hurt
-    ALLEGRO_SAMPLE_INSTANCE *sounds[4]; 
+    ALLEGRO_SAMPLE_INSTANCE *sounds[7]; 
     float atk_power;
     bool attack_ok;
     bool was_charging;

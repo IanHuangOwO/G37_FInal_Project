@@ -17,7 +17,10 @@ void JinPing_Load_Assets(Character *chara) {
         "attack_0.wav",
         "attack_1.wav",
         "attack_2.wav",
-        "attack_3.wav"
+        "attack_3.wav",
+        "charging.mp3",
+        "hurt.mp3",
+        "death.mp3",
     };
 
     for (int i = 0; i < MAX_SOUNDS; i++) {
@@ -29,6 +32,7 @@ void JinPing_Load_Assets(Character *chara) {
             chara->sounds[i] = al_create_sample_instance(sample);
             al_set_sample_instance_playmode(chara->sounds[i], ALLEGRO_PLAYMODE_ONCE);
             al_attach_sample_instance_to_mixer(chara->sounds[i], al_get_default_mixer());
+            al_set_sample_instance_gain(chara->sounds[i], 0.2);
         } else {
             chara->sounds[i] = NULL;
             fprintf(stderr, "Failed to load sound: %s\n", sound_path);

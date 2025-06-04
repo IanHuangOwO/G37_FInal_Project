@@ -83,7 +83,7 @@ void Character_update(Elements *self) {
     //     chara->vy = -8f;
     //     chara->is_in_air = true;
     // }
-    // printf("%d\n", gc->game_start_timer);
+
     if (chara->player_now == chara->player) {
         // Arrage Angle 
         if ((key_state[ALLEGRO_KEY_W] && self->label == 1) || (key_state[ALLEGRO_KEY_UP] && self->label == 2)) {
@@ -100,11 +100,13 @@ void Character_update(Elements *self) {
         // Horizontal movement
         if ((key_state[ALLEGRO_KEY_A] && self->label == 1) || (key_state[ALLEGRO_KEY_LEFT] && self->label == 2)) {
             chara->dir = false;
-            chara->vx = -MOVE_SPEED;  // ← store velocity, not move directly
+            chara->vx = chara->atk_level > 0 ? -MOVE_SPEED : 0;  // ← store velocity, not move directly
+            chara->atk_level -= chara->atk_level > 0 ? 5 : 0;
             if (chara->state != ATK) chara->state = MOVE;
         } else if ((key_state[ALLEGRO_KEY_D] && self->label == 1) || (key_state[ALLEGRO_KEY_RIGHT] && self->label == 2)) {
             chara->dir = true;
-            chara->vx = MOVE_SPEED;
+            chara->vx = chara->atk_level > 0 ? MOVE_SPEED : 0;
+            chara->atk_level -= chara->atk_level > 0 ? 5 : 0;
             if (chara->state != ATK) chara->state = MOVE;
         } else {
             chara->vx = 0;
@@ -112,24 +114,24 @@ void Character_update(Elements *self) {
         }
 
         if (((key_state[ALLEGRO_KEY_Q] && self->label == 1) || (key_state[ALLEGRO_KEY_SLASH] && self->label == 2)) && chara->state == IDLE) {
+            al_play_sample_instance(chara->sounds[SOUND_ATTACK_CHARGING]);
             if (chara->charging) {
                 chara->atk_power += ATTACK_POWER_CHARGE_SPEED;
                 if (chara->atk_power >= ATTACK_POWER_MAX) {
                     chara->atk_power = ATTACK_POWER_MAX;
                     chara->charging = false;  // Start going down
                 }
-                // printf("\rPlayer: %d Power: %f", chara->player, chara->atk_power);
             } else {
                 chara->atk_power -= ATTACK_POWER_CHARGE_SPEED;
                 if (chara->atk_power <= ATTACK_POWER_MIN) {
                     chara->atk_power = ATTACK_POWER_MIN;
                     chara->charging = true;  // Start going up
                 }
-                // printf("\rPlayer: %d Power: %f", chara->player, chara->atk_power);
             }
             chara->was_charging = true;
         } else {
             if (chara->was_charging) {
+                al_stop_sample_instance(chara->sounds[SOUND_ATTACK_CHARGING]);
                 chara->state = ATK;
                 chara->new_proj = false;
                 
@@ -216,6 +218,8 @@ void Character_Hurt(Elements *self, int damage) {
 
     // Gain Furry
     Character_Furry(self, damage);
+
+    al_play_sample_instance(chara->sounds[SOUND_HURT]);
 
     // printf("\nPlayer: %d Hp: %d\n", chara->player, chara->hp);
 }

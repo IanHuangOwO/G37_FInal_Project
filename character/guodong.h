@@ -9,7 +9,7 @@
 #include <math.h>
 
 #define MAX_GIF 4
-#define MAX_SOUNDS 4
+#define MAX_SOUNDS 7
 
 void GuoDong_Load_Assets(Character *chara);
 void GuoDong_Attack(Elements *self);
