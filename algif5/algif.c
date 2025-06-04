@@ -138,3 +138,45 @@ ALLEGRO_BITMAP *algif_get_frame_bitmap(ALGIF_ANIMATION *gif, int i) {
 double algif_get_frame_duration(ALGIF_ANIMATION *gif, int i) {
     return gif->frames[i].duration / 100.0;
 }
+void algif_update_gif(ALGIF_ANIMATION *gif, double now_time) {
+    if (gif->done || gif->start_time == 0) {
+        gif->start_time = now_time;
+        gif->display_index = 0;
+        gif->done = false;
+        return;
+    }
+
+    double elapsed = now_time - gif->start_time;
+    double gif_duration = gif->duration / 100.0;
+
+    // 不循環播放（loop == -1）
+    if (gif->loop == -1 && elapsed > gif_duration) {
+        gif->done = true;
+        gif->start_time = 0;
+        gif->display_index = 0;
+        return;
+    }
+
+    // 限次循環播放（loop > 0）
+    if (gif->loop > 0 && elapsed > gif_duration * gif->loop) {
+        gif->done = true;
+        gif->start_time = 0;
+        gif->display_index = 0;
+        return;
+    }
+
+    // 對 elapsed 秒數做取餘數，計算目前在第幾幀
+    elapsed = fmod(elapsed, gif_duration);
+
+    double acc_duration = 0;
+    for (int i = 0; i < gif->frames_count; i++) {
+        acc_duration += gif->frames[i].duration / 100.0;
+        if (elapsed < acc_duration) {
+            gif->display_index = i;
+            return;
+        }
+    }
+
+    // 如果全部都不符合，預設為第一幀
+    gif->display_index = 0;
+}

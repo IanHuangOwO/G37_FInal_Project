@@ -27,7 +27,9 @@ typedef enum ProjectileWho
     TANK_EXPLOSION,
     JAIL,
     BABY,
+    BABY_EXPLOSION,
     TORNADO,
+    TORNADO_EXPLOSION,
     ICE_WALL,
     AXE,
     
@@ -43,7 +45,7 @@ typedef struct _Projectile
     int who;
     int player;
     int width, height;
-    
+    int label;    
     // Motion of the projectile
     int x, y;
     float vx, vy;
@@ -52,7 +54,8 @@ typedef struct _Projectile
     bool collision;
     bool gravity;
     Shape *hitbox;
-    ContactInfo contact; 
+    ContactInfo contact;
+    void *update; 
 
     // Interaction of the projectile
     int durability;

@@ -22,6 +22,7 @@ typedef double (*fptrCenterX)(Shape *);
 typedef double (*fptrCenterY)(Shape *);
 typedef void (*fptrUpdateCenterX)(Shape *, int);
 typedef void (*fptrUpdateCenterY)(Shape *, int);
+typedef void (*fptrmove_to)(struct _Shape *self, int center_x, int center_y);
 typedef double (*fptrget_top)(struct _Shape *self);
 typedef double (*fptrget_bottom)(struct _Shape *self);
 typedef double (*fptrget_left)(struct _Shape *self);
@@ -35,6 +36,7 @@ struct _Shape
 	fptrCenterY center_y;
 	fptrUpdateCenterX update_center_x;
 	fptrUpdateCenterY update_center_y;
+	fptrmove_to move_to;
 	fptrget_top get_top;
 	fptrget_bottom get_bottom;
 	fptrget_left get_left;

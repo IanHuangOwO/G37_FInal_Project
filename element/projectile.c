@@ -19,6 +19,10 @@
 #include "../projectiles/winnie_explosion.h"
 #include "../projectiles/tank.h"
 #include "../projectiles/tank_explosion.h"
+#include "../projectiles/baby.h"
+#include "../projectiles/baby_explosion.h"
+#include "../projectiles/tornado.h"
+#include "../projectiles/tornado_explosion.h"
 
 #include <math.h>
 /*
@@ -87,6 +91,18 @@ Elements *New_Projectile(int label, int x, int y, float angle_deg, float power, 
         case TANK_EXPLOSION:
             Tank_Explosion_Initialize(pDerivedObj);
             break;
+        case BABY:
+            Baby_Initialize(pDerivedObj);
+            break;
+        case BABY_EXPLOSION:
+            Baby_Explosion_Initialize(pDerivedObj);
+            break;
+        case TORNADO:
+            Tornado_Initialize(pDerivedObj);
+            break;
+        case TORNADO_EXPLOSION:
+            Tornado_Explosion_Initialize(pDerivedObj);
+            break;
         default:
             // Optional: handle unknown values
             fprintf(stderr, "Unknown 'who' value: %d\n", who);
@@ -105,7 +121,6 @@ Elements *New_Projectile(int label, int x, int y, float angle_deg, float power, 
             pDerivedObj->sounds[i] = al_create_sample_instance(sample);
             al_set_sample_instance_playmode(pDerivedObj->sounds[i], ALLEGRO_PLAYMODE_ONCE);
             al_attach_sample_instance_to_mixer(pDerivedObj->sounds[i], al_get_default_mixer());
-            al_set_sample_instance_gain(pDerivedObj->sounds[i], 0.1);
         } else {
             pDerivedObj->sounds[i] = NULL;
             fprintf(stderr, "Failed to load sound: %s\n", sound_path);
@@ -256,6 +271,18 @@ void _Projectile_interact_Character(Elements *self, Elements *tar)
         case TANK_EXPLOSION:
             Tank_Explosion_Interaction_Character(self, tar);
             break;
+        case BABY:
+            Baby_Interaction_Character(self, tar);
+            break;
+        case BABY_EXPLOSION:
+            Baby_Explosion_Interaction_Character(self, tar);
+            break;
+        case TORNADO:
+            Tornado_Interaction_Character(self, tar);
+            break;
+        case TORNADO:
+            Tornado_Explosion_Interaction_Character(self, tar);
+            break;
         default:
             // Optional: handle unknown projectiles
             fprintf(stderr, "Unknown projectile type: %d\n", proj->who);
@@ -331,6 +358,18 @@ void _Projectile_interact_Ground(Elements *self, Elements *tar)
                 break;
             case TANK_EXPLOSION:
                 Tank_Explosion_Interaction_Ground(self, tar);
+                break;
+            case BABY:
+                Baby_Interaction_Ground(self, tar);
+                break;
+            case BABY_EXPLOSION:
+                Baby_Explosion_Interaction_Ground(self, tar);
+                break;
+            case TORNADO:
+                Tornado_Interaction_Ground(self, tar);
+                break;
+            case TORNADO:
+                Tornado_Explosion_Interaction_Ground(self, tar);
                 break;
             default:
                 // Optional: handle unknown projectiles
