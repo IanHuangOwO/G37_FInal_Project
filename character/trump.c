@@ -2,6 +2,7 @@
 #include "../projectiles/maga.h"
 #include "../projectiles/deport.h"
 #include "../projectiles/dump_truck.h"
+#include "../projectiles/tariff.h"
 
 void Trump_Load_Assets(Character *chara) {
     // Load animations
@@ -42,8 +43,9 @@ void Trump_Load_Assets(Character *chara) {
 void Trump_Attack(Elements *self) {    
     Character *chara = (Character *)self->pDerivedObj;
     if (chara->new_proj) return;
-    if (chara->atk_level < 1000) _Trump_Attack_0(self);
-    else if (chara->atk_level >= 1000 && chara->atk_level < 10000) _Trump_Attack_1(self);
+    if (chara->ultimate == true) _Trump_Attack_3(self);
+    else if (chara->atk_level < 1000) _Trump_Attack_0(self);
+    else if (chara->atk_level >= 1000 && chara->atk_level < 5000) _Trump_Attack_1(self);
     else  _Trump_Attack_2(self);
 }
 
@@ -109,4 +111,25 @@ void _Trump_Attack_2(Elements *self) {
     chara->new_proj = true;
 
     al_play_sample_instance(chara->sounds[SOUND_ATTACK_2]);
+}
+
+void _Trump_Attack_3(Elements *self) {
+    Character *chara = (Character *)self->pDerivedObj;
+
+    float angle_deg = chara->atk_angle;
+    float power = chara->atk_power;
+
+    int x = chara->x + chara->width / 2 - TARIFF_WIDTH / 2;
+    int y = chara->y + chara->height / 2 - TARIFF_HEIGHT / 2;
+
+    if (!chara->dir) angle_deg = 180.0f - angle_deg;
+
+    Elements *proj = New_Projectile(Projectile_L, x, y - 16, angle_deg, power, TARIFF, chara->player);
+    _Register_elements(scene, proj);
+
+    chara->new_proj = true;
+    chara->ultimate = false;
+    chara->atk_furry = 0;
+
+    al_play_sample_instance(chara->sounds[SOUND_ATTACK_3]);
 }

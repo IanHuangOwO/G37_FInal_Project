@@ -4,13 +4,10 @@
 /*
    [particle function]
 */
-Elements *New_Particle(int label, int x, int y, int who, int duration)
+Elements *New_Particle(int label, int x, int y, int who)
 {
     Particle *pDerivedObj = (Particle *)malloc(sizeof(Particle));
     Elements *pObj = New_Elements(label);
-    // setting derived object member
-    pDerivedObj->x = x - pDerivedObj->width / 2;
-    pDerivedObj->y = y - pDerivedObj->height / 2;;
     // setting who
     switch (who) {
         case ULTIMATE:
@@ -21,7 +18,9 @@ Elements *New_Particle(int label, int x, int y, int who, int duration)
             fprintf(stderr, "Unknown 'who' value: %d\n", who);
             break;
     }
-
+    pDerivedObj->who = label;
+    pDerivedObj->x = x - pDerivedObj->width / 2;
+    pDerivedObj->y = y - pDerivedObj->height / 2;;
 
     // setting derived object function
     pObj->pDerivedObj = pDerivedObj;

@@ -1,7 +1,7 @@
 #include "ultimate.h"
 
-#define ULTIMATE_IMG_PATH "assets/particle/ultimate.gif"
-#define ULTIMATE_DURATION -1
+#define ULTIMATE_IMG_PATH "assets/particles/ultimate.gif"
+#define ULTIMATE_DURATION 300
 
 void Ultimate_Initialize(Particle *par) {
     par->gif        = algif_new_gif(ULTIMATE_IMG_PATH, -1);

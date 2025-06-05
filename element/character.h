@@ -68,6 +68,7 @@ typedef struct _Character
     int hp;
     bool new_proj;
     bool ultimate;
+    bool draw_ultimate;
     ContactInfo contact; 
     Shape *hitbox;                      // the hitbox of object
 } Character;

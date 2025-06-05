@@ -3,6 +3,7 @@
 #include <allegro5/allegro_image.h>
 #include "character.h"
 #include "projectile.h"
+#include "particle.h"
 #include "../character/trump.h"
 #include "../character/jinping.h"
 #include "../character/guodong.h"
@@ -145,8 +146,9 @@ void Character_update(Elements *self) {
             }
         }
 
-        if (((key_state[ALLEGRO_KEY_E] && self->label == 1) || (key_state[ALLEGRO_KEY_COMMA] && self->label == 2)) && chara->atk_furry == FURRY_MAX) {
+        if (((key_state[ALLEGRO_KEY_E] && self->label == 1) || (key_state[ALLEGRO_KEY_COMMA] && self->label == 2)) && chara->atk_furry == FURRY_MAX && chara->ultimate == false) {
             chara->ultimate = true;
+            chara->draw_ultimate = false;
         }
     }
 
@@ -170,6 +172,14 @@ void Character_draw(Elements *self)
 {
     // with the state, draw corresponding image
     Character *chara = ((Character *)(self->pDerivedObj));
+
+    if (chara->ultimate == true && chara->draw_ultimate == false)
+    {
+        Elements *par = New_Particle(Particle_L, chara->x + chara->width / 2, chara->y - 128, ULTIMATE);
+        _Register_elements(scene, par);
+        chara->draw_ultimate = true;
+    }
+
     ALLEGRO_BITMAP *frame = algif_get_bitmap(chara->gif_status[chara->state], al_get_time());
     if (frame)
     {

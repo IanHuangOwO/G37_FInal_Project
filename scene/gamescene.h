@@ -18,6 +18,7 @@ typedef enum EleType
     Player2_L,
     Projectile_L,
     Floor_L,
+    Particle_L,
 } EleType;
 
 typedef enum CharacterWho

@@ -23,6 +23,10 @@ Elements *New_Ground(int who, int label)
     {
         image_path = "assets/maps/tiananmen_square_ground.png";
         mask_path  = "assets/maps/tiananmen_square_mask.txt";
+    } else 
+    {
+        image_path = "assets/maps/101_ground.png";
+        mask_path  = "assets/maps/101_mask.txt";
     }
 
     // Load image

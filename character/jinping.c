@@ -44,7 +44,7 @@ void JinPing_Attack(Elements *self) {
     if (chara->new_proj) return;
     
     if (chara->atk_level < 1000) _JinPing_Attack_0(self);
-    else if (chara->atk_level >= 1000 && chara->atk_level < 10000) _JinPing_Attack_1(self);
+    else if (chara->atk_level >= 1000 && chara->atk_level < 5000) _JinPing_Attack_1(self);
     else _JinPing_Attack_2(self);
 }
 
