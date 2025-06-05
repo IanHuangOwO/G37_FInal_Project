@@ -67,7 +67,7 @@ void end_update(Scene *self)
         if (mouse_states.x >= button3_x && mouse_states.x <= button3_x + img_3_width &&
             mouse_states.y >= button3_y && mouse_states.y <= button3_y + img_3_height) {
             self->scene_end = true;
-            window = -1;
+            exit(0);
         }
     }
 
