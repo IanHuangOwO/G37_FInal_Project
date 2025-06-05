@@ -2,6 +2,7 @@
 #include "../projectiles/crown.h"
 #include "../projectiles/winnie.h"
 #include "../projectiles/tank.h"
+#include "../projectiles/jail.h"
 
 void JinPing_Load_Assets(Character *chara) {
     // Load animations
@@ -114,7 +115,10 @@ void _JinPing_Attack_3(Elements *self) {
     ElementVec players = _Get_label_elements(scene, target_label);
     Character *chara2 = (Character *)players.arr[0]->pDerivedObj;
 
-    Elements *proj = New_Projectile(Projectile_L, (chara2->x + chara2->width / 2), -400, 0, 0, JAIL, chara->player);
+    Elements *par = New_Particle(Particle_L, (chara2->x + chara2->width / 2), (chara2->y + chara2->height / 2), TENTACLE);
+    _Register_elements(scene, par);
+
+    Elements *proj = New_Projectile(Projectile_L, (chara2->x + chara2->width / 2 - JAIL_WIDTH / 2), -1000, 0, 0, JAIL, chara->player);
     _Register_elements(scene, proj);
 
     chara->new_proj = true;

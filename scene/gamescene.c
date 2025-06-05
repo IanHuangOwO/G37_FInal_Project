@@ -24,7 +24,7 @@ Scene *New_GameScene(int label, int player1_who, int player2_who, int backgorund
     else if (backgorund_who == 1) pDerivedObj->background = al_load_bitmap("assets/maps/tiananmen_square_background.png");
     else pDerivedObj->background = al_load_bitmap("assets/maps/101_background.png");
     
-    pDerivedObj->game_start_timer = 480;
+    pDerivedObj->game_start_timer = 240;
     pDerivedObj->round_start_timer = ROUND_START_TIME;
     pDerivedObj->attack_start_timer = -1;
     pDerivedObj->round_who = Player1_L;
@@ -139,11 +139,11 @@ void _game_round_engine(Scene *self) {
 
     if (pObj->game_start_timer > 0) {
         ALLEGRO_BITMAP *number;
-        if (pObj->game_start_timer >= 360) {
+        if (pObj->game_start_timer >= 180) {
             number = al_load_bitmap("assets/numbers/3.png");
-        } else if (pObj->game_start_timer < 360 && pObj->game_start_timer >= 240) {
+        } else if (pObj->game_start_timer < 180 && pObj->game_start_timer >= 120) {
             number = al_load_bitmap("assets/numbers/2.png");
-        } else if (pObj->game_start_timer < 240 && pObj->game_start_timer >= 120) {
+        } else if (pObj->game_start_timer < 120 && pObj->game_start_timer >= 60) {
             number = al_load_bitmap("assets/numbers/1.png");
         } else {
             number = al_load_bitmap("assets/words/gamestart.png");
