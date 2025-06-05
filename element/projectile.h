@@ -64,6 +64,7 @@ typedef struct _Projectile
     int special_action;
     int anime;
     int anime_time;
+    int duration;
     ALGIF_ANIMATION *gif;
     ALLEGRO_SAMPLE_INSTANCE *sounds[1];
 } Projectile;
