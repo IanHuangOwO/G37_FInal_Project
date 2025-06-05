@@ -4,8 +4,8 @@
 #include <allegro5/allegro_acodec.h>
 
 #define TARIFF_IMG_PATH "assets/projectiles/tariff.gif"
-#define TARIFF_DURABILITY 10
-#define TARIFF_ACTION_COOLDOWN 30
+#define TARIFF_DURABILITY 100
+#define TARIFF_ACTION_COOLDOWN 15
 #define TARIFF_BOUNCE_DECAY 0
 #define TARIFF_COLLISION false
 #define TARIFF_GRAVITY true

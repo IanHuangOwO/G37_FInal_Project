@@ -34,7 +34,6 @@ typedef enum ProjectileWho
     AXE,
     TARIFF,
     TARIFF_EXPLOSION,
-    
 } ProjectileWho;
 
 typedef enum {

@@ -32,7 +32,7 @@ void GuoDong_Load_Assets(Character *chara) {
             chara->sounds[i] = al_create_sample_instance(sample);
             al_set_sample_instance_playmode(chara->sounds[i], ALLEGRO_PLAYMODE_ONCE);
             al_attach_sample_instance_to_mixer(chara->sounds[i], al_get_default_mixer());
-            al_set_sample_instance_gain(chara->sounds[i], 0.2);
+            al_set_sample_instance_gain(chara->sounds[i], 0.5);
         } else {
             chara->sounds[i] = NULL;
             fprintf(stderr, "Failed to load sound: %s\n", sound_path);
@@ -56,12 +56,12 @@ void _GuoDong_Attack_0(Elements *self) {
     float angle_deg = chara->atk_angle;
     float power = chara->atk_power;
 
-    int x = chara->x + chara->width / 2;
-    int y = chara->y + chara->height / 2;
+    int x = chara->x + chara->width / 2 - BABY_WIDTH / 2;
+    int y = chara->y + chara->height / 2 - BABY_HEIGHT / 2;
 
     if (!chara->dir) angle_deg = 180.0f - angle_deg;
-
-    Elements *proj = New_Projectile(Projectile_L, x, y, angle_deg, power);
+    
+    Elements *proj = New_Projectile(Projectile_L, x, y - 16, angle_deg, power, BABY, chara->player);
     _Register_elements(scene, proj);
     chara->new_proj = true;
 

@@ -1,40 +1,40 @@
-#include "Tariff_explosion.h"
+#include "jail.h"
 
-#define TARIFF_EXPLOSION_IMG_PATH "assets/projectiles/tariff_explosion.gif"
-#define TARIFF_EXPLOSION_DURABILITY 1
-#define TARIFF_EXPLOSION_ACTION_COOLDOWN 30
-#define TARIFF_EXPLOSION_DAMAGE 100
-#define TARIFF_EXPLOSION_BOUNCE_DECAY 0
-#define TARIFF_EXPLOSION_COLLISION false
-#define TARIFF_EXPLOSION_GRAVITY false
+#define JAIL_EXPLOSION_IMG_PATH "assets/projectiles/jail.gif"
+#define JAIL_EXPLOSION_DURABILITY 100000
+#define JAIL_EXPLOSION_ACTION_COOLDOWN 0
+#define JAIL_EXPLOSION_DAMAGE 100
+#define JAIL_EXPLOSION_BOUNCE_DECAY 0
+#define JAIL_EXPLOSION_COLLISION false
+#define JAIL_EXPLOSION_GRAVITY true
 
-void Tariff_Explosion_Initialize(Projectile *proj) 
+void Jail_Initialize(Projectile *proj) 
 {
-    proj->gif               = algif_new_gif(TARIFF_EXPLOSION_IMG_PATH, -1);
+    proj->gif               = algif_new_gif(JAIL_EXPLOSION_IMG_PATH, -1);
     proj->width             = proj->gif->width;
     proj->height            = proj->gif->height;
-    proj->durability        = TARIFF_EXPLOSION_DURABILITY;
+    proj->durability        = JAIL_EXPLOSION_DURABILITY;
     proj->action_cooldown   = 0;
-    proj->bounce_decay      = TARIFF_EXPLOSION_BOUNCE_DECAY;
-    proj->collision         = TARIFF_EXPLOSION_COLLISION;
-    proj->gravity           = TARIFF_EXPLOSION_GRAVITY;
+    proj->bounce_decay      = JAIL_EXPLOSION_BOUNCE_DECAY;
+    proj->collision         = JAIL_EXPLOSION_COLLISION;
+    proj->gravity           = JAIL_EXPLOSION_GRAVITY;
     proj->hitbox            = New_Circle(proj->x + proj->width / 2,
                                          proj->y + proj->height / 2,
                                          min(proj->width, proj->height) / 2);
 }
-void Tariff_Explosion_Interaction_Character(Elements *self, Elements *tar)
+void Jail_Interaction_Character(Elements *self, Elements *tar)
 {
     Projectile *proj = (Projectile *)self->pDerivedObj;
 
     proj->gif->display_index = 0;
     proj->gif->done = false;
 
-    Character_Hurt(tar, TARIFF_EXPLOSION_DAMAGE);
+    Character_Hurt(tar, JAIL_EXPLOSION_DAMAGE);
 
-    proj->durability --;
-    proj->action_cooldown = TARIFF_EXPLOSION_ACTION_COOLDOWN;
+    proj->durability = 0;
+    proj->action_cooldown = JAIL_EXPLOSION_ACTION_COOLDOWN + 30;
 }
-void Tariff_Explosion_Interaction_Ground(Elements *self, Elements *tar) 
+void Jail_Interaction_Ground(Elements *self, Elements *tar) 
 {
     Projectile *proj = (Projectile *)self->pDerivedObj;
     Ground *ground = (Ground *)tar->pDerivedObj;
@@ -74,6 +74,6 @@ void Tariff_Explosion_Interaction_Ground(Elements *self, Elements *tar)
         Character_Level(players.arr[i], deactivated_count);  // Level up by the number of deactivated tiles
     }
 
-    proj->durability --;
-    proj->action_cooldown = TARIFF_EXPLOSION_ACTION_COOLDOWN;
+    proj->durability -= deactivated_count;
+    proj->action_cooldown = JAIL_EXPLOSION_ACTION_COOLDOWN;
 }

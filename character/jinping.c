@@ -32,7 +32,7 @@ void JinPing_Load_Assets(Character *chara) {
             chara->sounds[i] = al_create_sample_instance(sample);
             al_set_sample_instance_playmode(chara->sounds[i], ALLEGRO_PLAYMODE_ONCE);
             al_attach_sample_instance_to_mixer(chara->sounds[i], al_get_default_mixer());
-            al_set_sample_instance_gain(chara->sounds[i], 0.2);
+            al_set_sample_instance_gain(chara->sounds[i], 0.5);
         } else {
             chara->sounds[i] = NULL;
             fprintf(stderr, "Failed to load sound: %s\n", sound_path);
@@ -42,8 +42,9 @@ void JinPing_Load_Assets(Character *chara) {
 void JinPing_Attack(Elements *self) {
     Character *chara = (Character *)self->pDerivedObj;
     if (chara->new_proj) return;
-    
-    if (chara->atk_level < 1000) _JinPing_Attack_0(self);
+
+    if (chara->ultimate == true) _JinPing_Attack_3(self);
+    else if (chara->atk_level < 1000) _JinPing_Attack_0(self);
     else if (chara->atk_level >= 1000 && chara->atk_level < 5000) _JinPing_Attack_1(self);
     else _JinPing_Attack_2(self);
 }
@@ -77,10 +78,10 @@ void _JinPing_Attack_1(Elements *self) {
 
     if (!chara->dir) angle_deg = 180.0f - angle_deg;
 
-    Elements *proj_0 = New_Projectile(Projectile_L, x, y - 16, angle_deg +  0, power, WINNIE, chara->player);
+    // Elements *proj_0 = New_Projectile(Projectile_L, x, y - 16, angle_deg +  0, power, WINNIE, chara->player);
     Elements *proj_1 = New_Projectile(Projectile_L, x, y - 16, angle_deg + 10, power, WINNIE, chara->player);
     Elements *proj_2 = New_Projectile(Projectile_L, x, y - 16, angle_deg - 10, power, WINNIE, chara->player);
-    _Register_elements(scene, proj_0);
+    // _Register_elements(scene, proj_0);
     _Register_elements(scene, proj_1);
     _Register_elements(scene, proj_2);
 
@@ -88,7 +89,6 @@ void _JinPing_Attack_1(Elements *self) {
 
     al_play_sample_instance(chara->sounds[SOUND_ATTACK_1]);
 }
-
 void _JinPing_Attack_2(Elements *self) {
     Character *chara = (Character *)self->pDerivedObj;
 
@@ -106,4 +106,18 @@ void _JinPing_Attack_2(Elements *self) {
     chara->new_proj = true;
 
     al_play_sample_instance(chara->sounds[SOUND_ATTACK_2]);
+}
+void _JinPing_Attack_3(Elements *self) {
+    Character *chara = (Character *)self->pDerivedObj;
+    // Level up the player's character
+    int target_label = (chara->player == 1) ? Player2_L : Player1_L;
+    ElementVec players = _Get_label_elements(scene, target_label);
+    Character *chara2 = (Character *)players.arr[0]->pDerivedObj;
+
+    Elements *proj = New_Projectile(Projectile_L, (chara2->x + chara2->width / 2), -400, 0, 0, JAIL, chara->player);
+    _Register_elements(scene, proj);
+
+    chara->new_proj = true;
+
+    al_play_sample_instance(chara->sounds[SOUND_ATTACK_3]);
 }
