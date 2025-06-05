@@ -10,8 +10,8 @@
 
 #define CHARACTER_COUNT 3
 #define CHARACTER_SIZE 400
-int player1_index = 1; 
-int player2_index = 2; 
+int player1_index = 0; 
+int player2_index = 1; 
 static ALLEGRO_BITMAP *background = NULL;
 static ALLEGRO_BITMAP *characters[CHARACTER_COUNT] = {NULL};
 // static ALLEGRO_FONT *font = NULL;
@@ -32,9 +32,9 @@ Scene *New_Menu(int label)
     // Load pictures
     tutorial_popup = al_load_bitmap("assets/startframe/tutorial_popup.png");
     background = al_load_bitmap("assets/startframe/startframe_bg.jpg");
-    characters[0] = al_load_bitmap("assets/startframe/guodong.png");
-    characters[1] = al_load_bitmap("assets/startframe/trump.png");
-    characters[2] = al_load_bitmap("assets/startframe/jinping.png");
+    characters[0] = al_load_bitmap("assets/startframe/trump.png");
+    characters[1] = al_load_bitmap("assets/startframe/jinping.png");
+    characters[2] = al_load_bitmap("assets/startframe/guodong.png");
     // Load sound
     pDerivedObj->song = al_load_sample("assets/sound/theme_song.mp3");
     al_reserve_samples(20);
@@ -68,6 +68,11 @@ void menu_update(Scene *self)
         {
             selected_player1 = player1_index;
             selected_player2 = player2_index;
+            // Randomly choose between player1_index and player2_index for selected_map
+            if (rand() % 2 == 0)
+                selected_map = player1_index;
+            else
+                selected_map = player2_index;
             self->scene_end = true;
             window = 1;
         }

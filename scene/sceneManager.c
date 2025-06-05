@@ -14,7 +14,7 @@ void create_scene(SceneType type)
         scene = New_Menu(Menu_L);
         break;
     case GameScene_L:
-        scene = New_GameScene(GameScene_L, Trump, JinPing, Tiananmen_Square);
+        scene = New_GameScene(GameScene_L, selected_player1, selected_player2, selected_map);
         break;
     case End_L:
         scene = New_End(End_L);

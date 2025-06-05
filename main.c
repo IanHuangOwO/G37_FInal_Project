@@ -10,5 +10,6 @@ int real_main(int argc, char **argv)
 }
 int main(int argc, char **argv)
 {
+    srand(time(NULL));
     return al_run_main(argc, argv, real_main);
 }
