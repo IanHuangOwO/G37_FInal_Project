@@ -188,12 +188,12 @@ void _game_round_engine(Scene *self) {
                 ALLEGRO_BITMAP *number;
                 if (pObj->round_start_timer > 0) {
                     if (pObj->round_start_timer >= 300) {
+                        al_play_sample_instance(pObj->count);
                         if (pObj->round_who == Player1_L) number = al_load_bitmap("assets/words/player1sturn.png");
                         else number = al_load_bitmap("assets/words/player2sturn.png");
                     } else if (pObj->round_start_timer < 300 && pObj->round_start_timer >= 240) {
                         number = al_load_bitmap("assets/numbers/5.png");
                     } else if (pObj->round_start_timer < 240 && pObj->round_start_timer >= 180) {
-                        al_play_sample_instance(pObj->count);
                         number = al_load_bitmap("assets/numbers/4.png");
                     } else if (pObj->round_start_timer < 180 && pObj->round_start_timer >= 120) {
                         number = al_load_bitmap("assets/numbers/3.png");
@@ -214,6 +214,7 @@ void _game_round_engine(Scene *self) {
                         c2->player_now = Player1_L;
                         pObj->round_who = Player1_L;
                     }
+                    al_stop_sample_instance(pObj->count);
                     pObj->round_start_timer = ROUND_START_TIME;
                 }
             }
