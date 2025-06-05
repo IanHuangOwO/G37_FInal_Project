@@ -81,9 +81,9 @@ void _GuoDong_Attack_1(Elements *self) {
 
     if (!chara->dir) angle_deg = 180.0f - angle_deg;
 
-    Elements *proj_0 = New_Projectile(Projectile_L, x, y - 16, angle_deg +  0, power, WINNIE, chara->player);
-    Elements *proj_1 = New_Projectile(Projectile_L, x, y - 16, angle_deg + 10, power, WINNIE, chara->player);
-    Elements *proj_2 = New_Projectile(Projectile_L, x, y - 16, angle_deg - 10, power, WINNIE, chara->player);
+    Elements *proj_0 = New_Projectile(Projectile_L, x, y - 16, angle_deg +  0, power, TORNADO, chara->player);
+    Elements *proj_1 = New_Projectile(Projectile_L, x, y - 16, angle_deg + 10, power, TORNADO, chara->player);
+    Elements *proj_2 = New_Projectile(Projectile_L, x, y - 16, angle_deg - 10, power, TORNADO, chara->player);
     _Register_elements(scene, proj_0);
     _Register_elements(scene, proj_1);
     _Register_elements(scene, proj_2);
@@ -103,7 +103,7 @@ void _GuoDong_Attack_2(Elements *self) {
 
     if (!chara->dir) angle_deg = 180.0f - angle_deg;
 
-    Elements *proj = New_Projectile(Projectile_L, x, y - 16, angle_deg, power, TARIFF, chara->player);
+    Elements *proj = New_Projectile(Projectile_L, x, y - 16, angle_deg, power, ICE_WALL, chara->player);
     _Register_elements(scene, proj);
 
     chara->new_proj = true;
