@@ -72,7 +72,7 @@ void menu_update(Scene *self)
         }
         if (key_state[ALLEGRO_KEY_P]) {  //pause
             self->scene_end = true;
-            window = Pause_L;
+            window = 3;
         }
         if (key_state[ALLEGRO_KEY_ESCAPE]) //esc
         {
