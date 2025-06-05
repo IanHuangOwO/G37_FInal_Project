@@ -98,8 +98,8 @@ void _GuoDong_Attack_2(Elements *self) {
     float angle_deg = chara->atk_angle;
     float power = chara->atk_power;
 
-    int x = chara->x + chara->width / 2 - ICE_WALL_WIDTH / 2;
-    int y = chara->y + chara->height / 2 - ICE_WALL_HEIGHT / 2;
+    int x = chara->x + chara->width / 2 - ICEWALL_WIDTH / 2;
+    int y = chara->y + chara->height / 2 - ICEWALL_HEIGHT / 2;
 
     if (!chara->dir) angle_deg = 180.0f - angle_deg;
 
