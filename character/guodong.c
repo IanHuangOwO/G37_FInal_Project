@@ -103,7 +103,7 @@ void _GuoDong_Attack_2(Elements *self) {
 
     if (!chara->dir) angle_deg = 180.0f - angle_deg;
 
-    Elements *proj = New_Projectile(Projectile_L, x, y - 16, angle_deg, power, ICE_WALL, chara->player);
+    Elements *proj = New_Projectile(Projectile_L, x, y - 16, angle_deg, power, ICEWALL, chara->player);
     _Register_elements(scene, proj);
 
     chara->new_proj = true;

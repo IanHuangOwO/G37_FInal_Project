@@ -23,6 +23,8 @@
 #include "../projectiles/baby_explosion.h"
 #include "../projectiles/tornado.h"
 #include "../projectiles/tornado_explosion.h"
+#include "../projectiles/icewall.h"
+#include "../projectiles/icewall_explosion.h"
 #include "../projectiles/tariff.h"
 #include "../projectiles/tariff_explosion.h"
 #include "../projectiles/jail.h"
