@@ -1,6 +1,8 @@
 #include "particle.h"
 #include "../particle/ultimate.h"
 #include "../particle/tentacle.h"
+#include "../particle/trump_pic.h"
+#include "../particle/jingping_pic.h"
 
 /*
    [particle function]
@@ -16,6 +18,12 @@ Elements *New_Particle(int label, int x, int y, int who)
             break;
         case TENTACLE:
             Tentacle_Initialize(pDerivedObj);
+            break;
+        case TRUMP_PIC:
+            Trump_Pic_Initialize(pDerivedObj);
+            break;
+        case JINGPING_PIC:
+            JingPing_Pic_Initialize(pDerivedObj);
             break;
         default:
             // Optional: handle unknown values

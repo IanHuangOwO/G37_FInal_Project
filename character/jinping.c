@@ -109,8 +109,11 @@ void _JinPing_Attack_2(Elements *self) {
     al_play_sample_instance(chara->sounds[SOUND_ATTACK_2]);
 }
 void _JinPing_Attack_3(Elements *self) {
+    Elements *par1 = New_Particle(Particle_L, 960, 830, JINGPING_PIC);
+    _Register_elements(scene, par1);
+
     Character *chara = (Character *)self->pDerivedObj;
-    // Level up the player's character
+
     int target_label = (chara->player == 1) ? Player2_L : Player1_L;
     ElementVec players = _Get_label_elements(scene, target_label);
     Character *chara2 = (Character *)players.arr[0]->pDerivedObj;

@@ -28,6 +28,7 @@
 		"tank_explosion.h": "c",
 		"tariff_explosion.h": "c",
 		"tornado_explosion.h": "c",
-		"ultimate.h": "c"
+		"ultimate.h": "c",
+		"tentacle.h": "c"
 	}
 }

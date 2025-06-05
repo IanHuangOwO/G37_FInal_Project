@@ -116,6 +116,9 @@ void _Trump_Attack_2(Elements *self) {
 void _Trump_Attack_3(Elements *self) {
     Character *chara = (Character *)self->pDerivedObj;
 
+    Elements *par = New_Particle(Particle_L, 960, 830, TRUMP_PIC);
+    _Register_elements(scene, par);
+
     float angle_deg = chara->atk_angle;
     float power = chara->atk_power;
 

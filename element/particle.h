@@ -10,6 +10,8 @@ typedef enum ParticleWho
 {
     ULTIMATE = 0,
     TENTACLE,
+    TRUMP_PIC,
+    JINGPING_PIC
 } ParticleWho;
 typedef struct _Particle
 {
