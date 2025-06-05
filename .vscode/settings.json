@@ -29,6 +29,7 @@
 		"tariff_explosion.h": "c",
 		"tornado_explosion.h": "c",
 		"ultimate.h": "c",
+		"icewall_explosion.h": "c",
 		"tentacle.h": "c"
 	}
 }

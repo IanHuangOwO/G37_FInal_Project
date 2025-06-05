@@ -23,6 +23,8 @@
 #include "../projectiles/baby_explosion.h"
 #include "../projectiles/tornado.h"
 #include "../projectiles/tornado_explosion.h"
+#include "../projectiles/icewall.h"
+#include "../projectiles/icewall_explosion.h"
 #include "../projectiles/tariff.h"
 #include "../projectiles/tariff_explosion.h"
 #include "../projectiles/jail.h"
@@ -106,6 +108,12 @@ Elements *New_Projectile(int label, int x, int y, float angle_deg, float power, 
         case TORNADO_EXPLOSION:
             Tornado_Explosion_Initialize(pDerivedObj);
             break;
+        case ICEWALL:
+            IceWall_Initialize(pDerivedObj);
+            break;
+        case ICEWALL_EXPLOSION:
+            IceWall_Explosion_Initialize(pDerivedObj);
+            break;
         case TARIFF:
             Tariff_Initialize(pDerivedObj);
             break;
@@ -168,6 +176,7 @@ void Projectile_update(Elements *self)
         if (proj->who == BABY_EXPLOSION && !proj->gif->done) return;
         if (proj->who == TORNADO_EXPLOSION && !proj->gif->done) return;
         if (proj->who == TARIFF_EXPLOSION && !proj->gif->done) return;
+        if (proj->who == ICEWALL_EXPLOSION && !proj->gif->done) return;
 
         self->dele = true;
         return;  // Don't update physics during explosion
