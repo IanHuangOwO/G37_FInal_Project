@@ -28,6 +28,7 @@ Scene *New_GameScene(int label, int player1_who, int player2_who, int backgorund
     pDerivedObj->round_start_timer = ROUND_START_TIME;
     pDerivedObj->attack_start_timer = -1;
     pDerivedObj->round_who = Player1_L;
+    pDerivedObj->state = true;
     pObj->pDerivedObj = pDerivedObj;
 
     // register element
@@ -89,7 +90,7 @@ void game_scene_update(Scene *self)
     if (key_state[ALLEGRO_KEY_0])
     {
         self->scene_end = true;
-        window = 2;
+        window = 0;
     }
 }
 void game_scene_draw(Scene *self)
@@ -103,7 +104,7 @@ void game_scene_draw(Scene *self)
         Elements *ele = allEle.arr[i];
         ele->Draw(ele);
     }
-
+    
     _game_round_engine(self);
 
     _draw_player_stats(self, Player1_L, 200, 900, false);   // Player 1, left to right
@@ -125,6 +126,7 @@ void game_scene_destroy(Scene *self)
         Elements *ele = allEle.arr[i];
         ele->Destroy(ele);
     }
+    al_destroy_sample_instance(Obj->bgm);
     free(Obj);
     free(self);
 }

@@ -19,7 +19,7 @@ Elements *New_Floor(int label)
     pDerivedObj->width = 4000;
     pDerivedObj->height = 10;
     pDerivedObj->x = -1500;
-    pDerivedObj->y = 1100;
+    pDerivedObj->y = 1500;
     pDerivedObj->hitbox = New_Rectangle(
         pDerivedObj->x, 
         pDerivedObj->y, 

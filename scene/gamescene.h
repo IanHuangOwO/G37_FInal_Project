@@ -40,6 +40,7 @@ typedef struct _GameScene
     int round_start_timer;
     int attack_start_timer;
     int round_who;
+    bool state;
     ALLEGRO_FONT *font;
     ALLEGRO_SAMPLE_INSTANCE *bgm;
     ALLEGRO_SAMPLE_INSTANCE *count;
