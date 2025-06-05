@@ -17,3 +17,4 @@ void Trump_Attack(Elements *self);
 void _Trump_Attack_0(Elements *self);
 void _Trump_Attack_1(Elements *self);
 void _Trump_Attack_2(Elements *self);
+void _Trump_Attack_3(Elements *self);

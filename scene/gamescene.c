@@ -22,6 +22,7 @@ Scene *New_GameScene(int label, int player1_who, int player2_who, int backgorund
     // setting derived object member
     if (backgorund_who == 0) pDerivedObj->background = al_load_bitmap("assets/maps/white_house_background.png");
     else if (backgorund_who == 1) pDerivedObj->background = al_load_bitmap("assets/maps/tiananmen_square_background.png");
+    else pDerivedObj->background = al_load_bitmap("assets/maps/101_background.png");
     
     pDerivedObj->game_start_timer = 480;
     pDerivedObj->round_start_timer = ROUND_START_TIME;
@@ -231,6 +232,7 @@ void _draw_player_stats(Scene *self, int label, int x, int y, bool flip) {
             al_rest(0.01); // sleep for 10ms to prevent CPU overuse
         }
 
+        al_stop_sample_instance(pObj->bgm);
         self->scene_end = true;
         window = 2;
     }

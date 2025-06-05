@@ -5,10 +5,9 @@ void GuoDong_Load_Assets(Character *chara) {
     const char *states[] = {"idle", "run", "attack", "hurt"};
     for (int i = 0; i < MAX_GIF; i++) {
         char path[64];
-        snprintf(path, sizeof(path), "assets/characters/guodong/%s.gif", states[i]);
+        snprintf(path, sizeof(path), "assets/characters/guo_dong/%s.gif", states[i]);
         chara->gif_status[i] = algif_new_gif(path, -1);
     }
-
     // Load sounds
     const char *sound_files[MAX_SOUNDS] = {
         "attack_0.wav",
@@ -19,10 +18,10 @@ void GuoDong_Load_Assets(Character *chara) {
         "hurt.mp3",
         "death.mp3",
     };
-
+    printf("1");
     for (int i = 0; i < MAX_SOUNDS; i++) {
         char sound_path[64];
-        snprintf(sound_path, sizeof(sound_path), "assets/characters/guodong/%s", sound_files[i]);
+        snprintf(sound_path, sizeof(sound_path), "assets/characters/guo_dong/%s", sound_files[i]);
 
         ALLEGRO_SAMPLE *sample = al_load_sample(sound_path);
         if (sample) {
@@ -35,15 +34,16 @@ void GuoDong_Load_Assets(Character *chara) {
             fprintf(stderr, "Failed to load sound: %s\n", sound_path);
         }
     }
+    printf("2");
 }
 void GuoDong_Attack(Elements *self) {
     if (!self || !self->pDerivedObj) return;
     Character *chara = (Character *)self->pDerivedObj;
     if (chara->new_proj) return;
 
-    if (chara->atk_level < 100) _GuoDong_Attack_0(self);
-    else if (chara->atk_level >= 100 && chara->atk_level < 500) _GuoDong_Attack_1(self);
-    else if (chara->atk_level >= 500 && chara->atk_level < 2000) _GuoDong_Attack_2(self);
+    if (chara->atk_level < 1000) _GuoDong_Attack_0(self);
+    else if (chara->atk_level >= 1000 && chara->atk_level < 5000) _GuoDong_Attack_1(self);
+    else _GuoDong_Attack_2(self);
 }
 
 void _GuoDong_Attack_0(Elements *self) {

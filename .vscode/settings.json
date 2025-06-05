@@ -25,6 +25,8 @@
 		"crown.h": "c",
 		"crown_explosion.h": "c",
 		"tank.h": "c",
-		"tank_explosion.h": "c"
+		"tank_explosion.h": "c",
+		"tariff_explosion.h": "c",
+		"tornado_explosion.h": "c"
 	}
 }

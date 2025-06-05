@@ -32,6 +32,8 @@ typedef enum ProjectileWho
     TORNADO_EXPLOSION,
     ICE_WALL,
     AXE,
+    TARIFF,
+    TARIFF_EXPLOSION,
     
 } ProjectileWho;
 
