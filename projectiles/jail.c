@@ -1,23 +1,23 @@
 #include "jail.h"
 
-#define JAIL_EXPLOSION_IMG_PATH "assets/projectiles/jail.gif"
-#define JAIL_EXPLOSION_DURABILITY 100000
-#define JAIL_EXPLOSION_ACTION_COOLDOWN 0
-#define JAIL_EXPLOSION_DAMAGE 100
-#define JAIL_EXPLOSION_BOUNCE_DECAY 0
-#define JAIL_EXPLOSION_COLLISION false
-#define JAIL_EXPLOSION_GRAVITY true
+#define JAIL_IMG_PATH "assets/projectiles/jail.gif"
+#define JAIL_DURABILITY 100000
+#define JAIL_ACTION_COOLDOWN 0
+#define JAIL_DAMAGE 100
+#define JAIL_BOUNCE_DECAY 0
+#define JAIL_COLLISION false
+#define JAIL_GRAVITY true
 
 void Jail_Initialize(Projectile *proj) 
 {
-    proj->gif               = algif_new_gif(JAIL_EXPLOSION_IMG_PATH, -1);
+    proj->gif               = algif_new_gif(JAIL_IMG_PATH, -1);
     proj->width             = proj->gif->width;
     proj->height            = proj->gif->height;
-    proj->durability        = JAIL_EXPLOSION_DURABILITY;
+    proj->durability        = JAIL_DURABILITY;
     proj->action_cooldown   = 0;
-    proj->bounce_decay      = JAIL_EXPLOSION_BOUNCE_DECAY;
-    proj->collision         = JAIL_EXPLOSION_COLLISION;
-    proj->gravity           = JAIL_EXPLOSION_GRAVITY;
+    proj->bounce_decay      = JAIL_BOUNCE_DECAY;
+    proj->collision         = JAIL_COLLISION;
+    proj->gravity           = JAIL_GRAVITY;
     proj->hitbox            = New_Circle(proj->x + proj->width / 2,
                                          proj->y + proj->height / 2,
                                          min(proj->width, proj->height) / 2);
@@ -29,10 +29,10 @@ void Jail_Interaction_Character(Elements *self, Elements *tar)
     proj->gif->display_index = 0;
     proj->gif->done = false;
 
-    Character_Hurt(tar, JAIL_EXPLOSION_DAMAGE);
+    Character_Hurt(tar, JAIL_DAMAGE);
 
     proj->durability = 0;
-    proj->action_cooldown = JAIL_EXPLOSION_ACTION_COOLDOWN + 30;
+    proj->action_cooldown = JAIL_ACTION_COOLDOWN + 30;
 }
 void Jail_Interaction_Ground(Elements *self, Elements *tar) 
 {
@@ -75,5 +75,5 @@ void Jail_Interaction_Ground(Elements *self, Elements *tar)
     }
 
     proj->durability -= deactivated_count;
-    proj->action_cooldown = JAIL_EXPLOSION_ACTION_COOLDOWN;
+    proj->action_cooldown = JAIL_ACTION_COOLDOWN;
 }

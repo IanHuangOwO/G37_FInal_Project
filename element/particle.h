@@ -9,6 +9,7 @@
 typedef enum ParticleWho
 {
     ULTIMATE = 0,
+    TENTACLE,
 } ParticleWho;
 typedef struct _Particle
 {

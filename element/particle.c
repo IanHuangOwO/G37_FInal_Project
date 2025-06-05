@@ -1,5 +1,6 @@
 #include "particle.h"
 #include "../particle/ultimate.h"
+#include "../particle/tentacle.h"
 
 /*
    [particle function]
@@ -12,6 +13,9 @@ Elements *New_Particle(int label, int x, int y, int who)
     switch (who) {
         case ULTIMATE:
             Ultimate_Initialize(pDerivedObj);
+            break;
+        case TENTACLE:
+            Tentacle_Initialize(pDerivedObj);
             break;
         default:
             // Optional: handle unknown values

@@ -27,6 +27,7 @@
 		"tank.h": "c",
 		"tank_explosion.h": "c",
 		"tariff_explosion.h": "c",
-		"tornado_explosion.h": "c"
+		"tornado_explosion.h": "c",
+		"ultimate.h": "c"
 	}
 }

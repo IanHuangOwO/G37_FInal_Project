@@ -2,6 +2,7 @@
 
 #include "../element/character.h"
 #include "../element/projectile.h"
+#include "../element/particle.h"
 #include "../scene/sceneManager.h"
 #include "../algif5/algif.h"
 #include <allegro5/allegro_audio.h>

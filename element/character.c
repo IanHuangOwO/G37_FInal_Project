@@ -172,18 +172,16 @@ void Character_draw(Elements *self)
 {
     // with the state, draw corresponding image
     Character *chara = ((Character *)(self->pDerivedObj));
-
+    ALLEGRO_BITMAP *frame = algif_get_bitmap(chara->gif_status[chara->state], al_get_time());
+    if (frame)
+    {
+        al_draw_bitmap(frame, chara->x, chara->y, ((chara->dir) ? ALLEGRO_FLIP_HORIZONTAL : 0));
+    }
     if (chara->ultimate == true && chara->draw_ultimate == false)
     {
         Elements *par = New_Particle(Particle_L, chara->x + chara->width / 2, chara->y - 128, ULTIMATE);
         _Register_elements(scene, par);
         chara->draw_ultimate = true;
-    }
-
-    ALLEGRO_BITMAP *frame = algif_get_bitmap(chara->gif_status[chara->state], al_get_time());
-    if (frame)
-    {
-        al_draw_bitmap(frame, chara->x, chara->y, ((chara->dir) ? ALLEGRO_FLIP_HORIZONTAL : 0));
     }
 }
 void Character_destory(Elements *self)
