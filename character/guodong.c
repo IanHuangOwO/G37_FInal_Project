@@ -1,7 +1,7 @@
 #include "guodong.h"
 #include "../projectiles/baby.h"
 #include "../projectiles/tornado.h"
-#include "../projectiles/ice_wall.h"
+#include "../projectiles/icewall.h"
 
 
 void GuoDong_Load_Assets(Character *chara) {
