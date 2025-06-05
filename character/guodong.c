@@ -47,41 +47,45 @@ void GuoDong_Attack(Elements *self) {
 }
 
 void _GuoDong_Attack_0(Elements *self) {
-    // Character *chara = (Character *)self->pDerivedObj;
+    Character *chara = (Character *)self->pDerivedObj;
 
-    // float angle_deg = chara->atk_angle;
-    // float power = chara->atk_power;
+    float angle_deg = chara->atk_angle;
+    float power = chara->atk_power;
 
-    // int x = chara->x + chara->width / 2;
-    // int y = chara->y + chara->height / 2;
+    int x = chara->x + chara->width / 2;
+    int y = chara->y + chara->height / 2;
 
-    // if (!chara->dir) angle_deg = 180.0f - angle_deg;
+    if (!chara->dir) angle_deg = 180.0f - angle_deg;
 
-    // Elements *proj = New_Projectile(Projectile_L, x, y, angle_deg, power);
-    // _Register_elements(scene, proj);
-    // chara->new_proj = true;
+    Elements *proj = New_Projectile(Projectile_L, x, y, angle_deg, power);
+    _Register_elements(scene, proj);
+    chara->new_proj = true;
 
-    // al_play_sample_instance(chara->sounds[SOUND_ATTACK_0]);
+    al_play_sample_instance(chara->sounds[SOUND_ATTACK_0]);
 }
 
 void _GuoDong_Attack_1(Elements *self) {
-    // Character *chara = (Character *)self->pDerivedObj;
-    // chara->atk_angle = -45.0f;
-    // chara->atk_power = 10.0f;
+    Character *chara = (Character *)self->pDerivedObj;
+    chara->atk_angle = -45.0f;
+    chara->atk_power = 10.0f;
 
-    // float angle_deg = chara->atk_angle;
-    // float power = chara->atk_power;
+    float angle_deg = chara->atk_angle;
+    float power = chara->atk_power;
 
-    // int x = chara->x + chara->width / 2;
-    // int y = chara->y + chara->height / 2;
+    int x = chara->x + chara->width / 2;
+    int y = chara->y + chara->height / 2;
 
-    // if (!chara->dir) angle_deg = 180.0f - angle_deg;
+    if (!chara->dir) angle_deg = 180.0f - angle_deg;
 
-    // Elements *proj_0 = New_Projectile(Projectile_L, x, y, angle_deg, power);
-    // _Register_elements(scene, proj_0);
-    // chara->new_proj = true;
+    Elements *proj_0 = New_Projectile(Projectile_L, x, y - 16, angle_deg +  0, power, WINNIE, chara->player);
+    Elements *proj_1 = New_Projectile(Projectile_L, x, y - 16, angle_deg + 10, power, WINNIE, chara->player);
+    Elements *proj_2 = New_Projectile(Projectile_L, x, y - 16, angle_deg - 10, power, WINNIE, chara->player);
+    _Register_elements(scene, proj_0);
+    _Register_elements(scene, proj_1);
+    _Register_elements(scene, proj_2);
+    chara->new_proj = true;
 
-    // al_play_sample_instance(chara->sounds[SOUND_ATTACK_1]);
+    al_play_sample_instance(chara->sounds[SOUND_ATTACK_1]);
 }
 
 void _GuoDong_Attack_2(Elements *self) {
