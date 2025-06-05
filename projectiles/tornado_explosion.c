@@ -82,12 +82,14 @@ void Tornado_Destroy_Ground_At_Hitbox(Shape *hitbox, int player) {
     Projectile *proj = (Projectile *)hitbox->pDerivedObj;
     Elements *elem = New_Ground(proj->player, proj->label);
     Ground *ground = (Ground *)(elem->pDerivedObj);
-  
+
+    // Get tile range of hitbox
     int left   = (int)(hitbox->get_left(hitbox)) / TILE_WIDTH;
     int right  = (int)(hitbox->get_right(hitbox)) / TILE_WIDTH;
     int top    = (int)(hitbox->get_top(hitbox)) / TILE_HEIGHT;
     int bottom = (int)(hitbox->get_bottom(hitbox)) / TILE_HEIGHT;
 
+    // Clamp to map bounds
     if (left < 0) left = 0;
     if (right >= MAP_COLS) right = MAP_COLS - 1;
     if (top < 0) top = 0;
@@ -95,6 +97,7 @@ void Tornado_Destroy_Ground_At_Hitbox(Shape *hitbox, int player) {
 
     int deactivated_count = 0;
 
+    // Check and erase overlapping ground tiles
     for (int i = top; i <= bottom; i++) {
         for (int j = left; j <= right; j++) {
             if (!ground->active[i][j]) continue;
@@ -105,7 +108,10 @@ void Tornado_Destroy_Ground_At_Hitbox(Shape *hitbox, int player) {
         }
     }
 
+    // Get target player label
     int target_label = (player == 1) ? Player1_L : Player2_L;
+
+    // Level up all characters with matching label
     ElementVec players = _Get_label_elements(scene, target_label);
     for (int i = 0; i < players.len; i++) {
         Character_Level(players.arr[i], deactivated_count);
