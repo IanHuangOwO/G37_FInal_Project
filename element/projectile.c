@@ -109,10 +109,10 @@ Elements *New_Projectile(int label, int x, int y, float angle_deg, float power, 
             Tornado_Explosion_Initialize(pDerivedObj);
             break;
         case ICEWALL:
-            Icewall_Initialize(pDerivedObj);
+            IceWall_Initialize(pDerivedObj);
             break;
         case ICEWALL_EXPLOSION:
-            Icewall_Explosion_Initialize(pDerivedObj);
+            IceWall_Explosion_Initialize(pDerivedObj);
             break;
         case TARIFF:
             Tariff_Initialize(pDerivedObj);
