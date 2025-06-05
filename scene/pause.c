@@ -96,7 +96,7 @@ void pause_update(Scene *self)
             mouse_states.y >= exit_y && mouse_states.y <= exit_y + img4_h)
         {
             self->scene_end = true;
-            window = -1;
+            exit(0);
         }
     }
 }
