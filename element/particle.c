@@ -4,7 +4,7 @@
 /*
    [particle function]
 */
-Elements *New_Particle(int label, int x, int y, int who)
+Elements *New_Particle(int label, int x, int y, int who, int duration)
 {
     Particle *pDerivedObj = (Particle *)malloc(sizeof(Particle));
     Elements *pObj = New_Elements(label);
@@ -31,7 +31,14 @@ Elements *New_Particle(int label, int x, int y, int who)
     pObj->Destroy = Particle_destory;
     return pObj;
 }
-void Particle_update(Elements *self) {}
+void Particle_update(Elements *self) {
+    Particle *par = ((Particle *)(self->pDerivedObj));
+    if (par->duration == 0) {
+        self->dele = true;
+    } else if (par->duration > 0) {
+        par->duration --;
+    }
+}
 void Particle_interact(Elements *self) {}
 void Particle_draw(Elements *self)
 {

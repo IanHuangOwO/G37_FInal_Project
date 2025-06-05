@@ -3,6 +3,8 @@
 #include "gamescene.h"
 #include "pause.h"
 #include "end.h"
+#include "../global.h"
+
 Scene *scene = NULL;
 void create_scene(SceneType type)
 {

@@ -25,7 +25,7 @@ Scene *New_Pause(int label)
     pDerivedObj->sample_instance = al_create_sample_instance(pDerivedObj->song);
     pDerivedObj->title_x = 0;
     pDerivedObj->title_y = 0;
-    pDerivedObj->volume_bar_x = 470;
+    pDerivedObj->volume_bar_x = 900;
     pDerivedObj->volume_bar_y = 200;
     pDerivedObj->volume_bar_width = 406;
     pDerivedObj->volume_bar_height = 64;
@@ -37,7 +37,7 @@ Scene *New_Pause(int label)
     al_attach_sample_instance_to_mixer(pDerivedObj->sample_instance, al_get_default_mixer());
     // set the volume of instance
     al_set_sample_instance_gain(pDerivedObj->sample_instance, 0.1);
-    pDerivedObj->background = al_load_bitmap("assets/maps/white_house_background.png");
+    pDerivedObj->background = al_load_bitmap("assets/maps/tiananmen_square_background.png");
     pDerivedObj->img_1 = al_load_bitmap("assets/image/volume.png");
     pDerivedObj->img_2 = al_load_bitmap("assets/image/volume_icon.png");
     pDerivedObj->img_3 = al_load_bitmap("assets/image/resume.png");
@@ -54,10 +54,26 @@ void pause_update(Scene *self)
     Pause *Obj = ((Pause *)(self->pDerivedObj));
     ALLEGRO_MOUSE_STATE mouse_states;
     al_get_mouse_state(&mouse_states);
+
+    int screen_w = al_get_display_width(al_get_current_display());
+    int screen_h = al_get_display_height(al_get_current_display());
+    int center_x = screen_w / 2;
+
+    int img3_w = al_get_bitmap_width(Obj->img_3);
+    int img3_h = al_get_bitmap_height(Obj->img_3);
+    int img4_w = al_get_bitmap_width(Obj->img_4);
+    int img4_h = al_get_bitmap_height(Obj->img_4);
+
+    int resume_x = center_x - img3_w / 2;
+    int resume_y = screen_h / 2 + 50;
+    int exit_x = center_x - img4_w / 2;
+    int exit_y = screen_h / 2 + 200;
+
+    // Handle volume bar click
     if (mouse_states.buttons & 1)
     {
         if (mouse_states.x >= Obj->volume_bar_x &&
-            mouse_states.y <= Obj->volume_bar_x + Obj->volume_bar_width &&
+            mouse_states.x <= Obj->volume_bar_x + Obj->volume_bar_width &&
             mouse_states.y >= Obj->volume_bar_y &&
             mouse_states.y <= Obj->volume_bar_y + Obj->volume_bar_height)
         {
@@ -67,52 +83,79 @@ void pause_update(Scene *self)
             al_set_mixer_gain(al_get_default_mixer(), Obj->volume);
         }
 
-        // check if click the button
-        if(mouse_states.x >= Obj->title_x+250 && mouse_states.x <= Obj->title_x+750 && 
-            mouse_states.y >= Obj->title_y+350 && mouse_states.y <= Obj->title_y+470)
+        // Resume button click
+        if (mouse_states.x >= resume_x && mouse_states.x <= resume_x + img3_w &&
+            mouse_states.y >= resume_y && mouse_states.y <= resume_y + img3_h)
         {
             self->scene_end = true;
-            window = 0; // change the scene to start frame
+            window = 0;
         }
-        if(mouse_states.x >= Obj->title_x+250 && mouse_states.x <= Obj->title_x+750 &&
-            mouse_states.y >= Obj->title_y+550 && mouse_states.y <= Obj->title_y+770)
+
+        // Exit button click
+        if (mouse_states.x >= exit_x && mouse_states.x <= exit_x + img4_w &&
+            mouse_states.y >= exit_y && mouse_states.y <= exit_y + img4_h)
         {
             self->scene_end = true;
-            window = -1; // change the scene (quit)
-        } 
+            window = -1;
+        }
     }
-    return;
 }
 void pause_draw(Scene *self)
 {
     Pause *Obj = ((Pause *)(self->pDerivedObj));
+
+    int center_x = WIDTH / 2;
+
+    int img3_w = al_get_bitmap_width(Obj->img_3);
+    int img4_w = al_get_bitmap_width(Obj->img_4);
+    int bar_img_w = al_get_bitmap_width(Obj->img_1);
+
+    // Save title_x for button positioning
+    Obj->title_x = center_x;
+    Obj->title_y = 0;
+
+    // Draw background
     al_draw_bitmap(Obj->background, 0, 0, 0);
-    al_draw_bitmap(Obj->img_1, Obj->volume_bar_x-400, Obj->volume_bar_y, 0);
-    al_draw_filled_rectangle(
+
+    // Draw volume label (left of bar)
+    al_draw_bitmap(Obj->img_1, Obj->volume_bar_x - bar_img_w - 100, Obj->volume_bar_y, 0);
+
+    // Draw volume fill bar
+    al_draw_filled_rounded_rectangle(
         Obj->volume_bar_x, Obj->volume_bar_y,
-        Obj->volume_bar_x + Obj->volume * Obj->volume_bar_width, Obj->volume_bar_y + Obj->volume_bar_height,
-        al_map_rgb(0, 255, 0)
+        Obj->volume_bar_x + Obj->volume * Obj->volume_bar_width,
+        Obj->volume_bar_y + Obj->volume_bar_height,
+        10, 10, al_map_rgb(0, 255, 0)
     );
+
+    // Draw volume icon
     al_draw_bitmap(Obj->img_2, Obj->volume_bar_x, Obj->volume_bar_y, 0);
-    al_draw_bitmap(Obj->img_3, Obj->title_x + 250, Obj->title_y + 350, 0);
-    al_draw_bitmap(Obj->img_4, Obj->title_x + 250, Obj->title_y + 550, 0);  
+
+    // Draw resume button
+    al_draw_bitmap(Obj->img_3, center_x - img3_w / 2, HEIGHT / 2 + 50, 0);
+
+    // Draw exit button
+    al_draw_bitmap(Obj->img_4, center_x - img4_w / 2, HEIGHT / 2 + 200, 0);
+
+    // Draw volume text
     al_draw_textf(
         Obj->font,
         al_map_rgb(255, 255, 255),
-        Obj-> volume_bar_x-320, Obj->volume_bar_y,
+        Obj->volume_bar_x + Obj->volume_bar_width + 10,
+        Obj->volume_bar_y + 10,
         0,
-        "       : %d", (int)(Obj->volume * 100)
-    ); 
+        "%d", (int)(Obj->volume * 100)
+    );
+
     al_play_sample_instance(Obj->sample_instance);
 }
+
 void pause_destroy(Scene *self)
 {
     Pause *Obj = ((Pause *)(self->pDerivedObj));
     al_destroy_font(Obj->font);
     al_destroy_sample(Obj->song);
     al_destroy_sample_instance(Obj->sample_instance);
-    // ALLEGRO_BITMAP *background = Obj->background;
-    // al_destroy_bitmap(background);
     al_destroy_bitmap(Obj->img_1);
     al_destroy_bitmap(Obj->img_2);
     al_destroy_bitmap(Obj->img_3);

@@ -3,6 +3,7 @@
 #include <allegro5/allegro_acodec.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
+#include <allegro5/allegro.h>
 #include "menu.h"
 #include <stdbool.h>
 #include "sceneManager.h"
@@ -13,7 +14,7 @@ int player1_index = 1;
 int player2_index = 2; 
 static ALLEGRO_BITMAP *background = NULL;
 static ALLEGRO_BITMAP *characters[CHARACTER_COUNT] = {NULL};
-static ALLEGRO_FONT *font = NULL;
+// static ALLEGRO_FONT *font = NULL;
 static ALLEGRO_BITMAP *tutorial_popup = NULL;
 static bool popup_active = false;
 static double last_toggle_time_t = 0; 
@@ -35,7 +36,7 @@ Scene *New_Menu(int label)
     characters[1] = al_load_bitmap("assets/startframe/trump.png");
     characters[2] = al_load_bitmap("assets/startframe/jinping.png");
     // Load sound
-    pDerivedObj->song = al_load_sample("assets/sound/menu.mp3");
+    pDerivedObj->song = al_load_sample("assets/sound/theme_song.mp3");
     al_reserve_samples(20);
     pDerivedObj->sample_instance = al_create_sample_instance(pDerivedObj->song);
     pDerivedObj->title_x = WIDTH / 2;
