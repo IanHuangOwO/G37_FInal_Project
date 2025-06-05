@@ -280,7 +280,7 @@ void _Projectile_interact_Character(Elements *self, Elements *tar)
         case TORNADO:
             Tornado_Interaction_Character(self, tar);
             break;
-        case TORNADO:
+        case TORNADO_EXPLOSION:
             Tornado_Explosion_Interaction_Character(self, tar);
             break;
         default:
@@ -368,7 +368,7 @@ void _Projectile_interact_Ground(Elements *self, Elements *tar)
             case TORNADO:
                 Tornado_Interaction_Ground(self, tar);
                 break;
-            case TORNADO:
+            case TORNADO_EXPLOSION:
                 Tornado_Explosion_Interaction_Ground(self, tar);
                 break;
             default:
