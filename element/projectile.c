@@ -167,6 +167,8 @@ void Projectile_update(Elements *self)
         if (proj->who == TANK_EXPLOSION && !proj->gif->done) return;
         if (proj->who == BABY_EXPLOSION && !proj->gif->done) return;
         if (proj->who == TORNADO_EXPLOSION && !proj->gif->done) return;
+        if (proj->who == TARIFF_EXPLOSION && !proj->gif->done) return;
+
         self->dele = true;
         return;  // Don't update physics during explosion
     }
