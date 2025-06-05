@@ -94,12 +94,12 @@ void _GuoDong_Attack_2(Elements *self) {
     float angle_deg = chara->atk_angle;
     float power = chara->atk_power;
 
-    int x = chara->x + chara->width / 2 - TANK_WIDTH / 2;
-    int y = chara->y + chara->height / 2 - TANK_HEIGHT / 2;
+    int x = chara->x + chara->width / 2 - TARIFF_WIDTH / 2;
+    int y = chara->y + chara->height / 2 - TARIFF_HEIGHT / 2;
 
     if (!chara->dir) angle_deg = 180.0f - angle_deg;
 
-    Elements *proj = New_Projectile(Projectile_L, x, y - 16, angle_deg, power, TANK, chara->player);
+    Elements *proj = New_Projectile(Projectile_L, x, y - 16, angle_deg, power, TARIFF, chara->player);
     _Register_elements(scene, proj);
 
     chara->new_proj = true;
