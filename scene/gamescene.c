@@ -231,6 +231,7 @@ void _draw_player_stats(Scene *self, int label, int x, int y, bool flip) {
             al_rest(0.01); // sleep for 10ms to prevent CPU overuse
         }
 
+        al_stop_sample_instance(pObj->bgm);
         self->scene_end = true;
         window = 2;
     }

@@ -60,6 +60,7 @@ Elements *New_Character(int who, int label)
     pDerivedObj->hp = HP_MAX;
     pDerivedObj->hurt_cooldown = 0;
     pDerivedObj->new_proj = false;
+    pDerivedObj->ultimate = false;
     pObj->pDerivedObj = pDerivedObj;
 
     // setting derived object function
@@ -142,6 +143,10 @@ void Character_update(Elements *self) {
                 }
                 chara->was_charging = false;
             }
+        }
+
+        if (((key_state[ALLEGRO_KEY_E] && self->label == 1) || (key_state[ALLEGRO_KEY_COMMA] && self->label == 2)) && chara->atk_furry == FURRY_MAX) {
+            chara->ultimate = true;
         }
     }
 

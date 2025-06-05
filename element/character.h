@@ -67,6 +67,7 @@ typedef struct _Character
     int hurt_cooldown;
     int hp;
     bool new_proj;
+    bool ultimate;
     ContactInfo contact; 
     Shape *hitbox;                      // the hitbox of object
 } Character;
