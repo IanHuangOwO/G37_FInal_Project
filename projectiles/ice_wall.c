@@ -15,7 +15,7 @@ void IceWall_Initialize(Projectile *proj)
     proj->collision = true;
     proj->is_in_air = false;
     proj->anime_time = 5 * FPS;
-    proj->duration = 5 * FPS;
+    // proj->duration = 5 * FPS;
     proj->hitbox = New_Rectangle(proj->x, proj->y, proj->width, proj->height);
 }
 

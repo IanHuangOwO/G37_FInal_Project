@@ -146,7 +146,7 @@ void Character_update(Elements *self) {
             }
         }
 
-        if (((key_state[ALLEGRO_KEY_E] && self->label == 1) || (key_state[ALLEGRO_KEY_COMMA] && self->label == 2)) && chara->atk_furry == FURRY_MAX && chara->ultimate == false) {
+        if (((key_state[ALLEGRO_KEY_E] && self->label == 1) || (key_state[ALLEGRO_KEY_COMMA] && self->label == 2)) && chara->atk_furry < FURRY_MAX && chara->ultimate == false) {
             chara->ultimate = true;
             chara->draw_ultimate = false;
         }

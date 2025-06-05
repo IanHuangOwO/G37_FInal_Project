@@ -33,7 +33,7 @@ void Trump_Load_Assets(Character *chara) {
             chara->sounds[i] = al_create_sample_instance(sample);
             al_set_sample_instance_playmode(chara->sounds[i], ALLEGRO_PLAYMODE_ONCE);
             al_attach_sample_instance_to_mixer(chara->sounds[i], al_get_default_mixer());
-            al_set_sample_instance_gain(chara->sounds[i], 0.2);
+            al_set_sample_instance_gain(chara->sounds[i], 0.5);
         } else {
             chara->sounds[i] = NULL;
             fprintf(stderr, "Failed to load sound: %s\n", sound_path);
@@ -124,7 +124,7 @@ void _Trump_Attack_3(Elements *self) {
 
     if (!chara->dir) angle_deg = 180.0f - angle_deg;
 
-    Elements *proj = New_Projectile(Projectile_L, x, y - 16, angle_deg, power, TARIFF, chara->player);
+    Elements *proj = New_Projectile(Projectile_L, x, y - 128, angle_deg, power, TARIFF, chara->player);
     _Register_elements(scene, proj);
 
     chara->new_proj = true;

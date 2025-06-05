@@ -16,3 +16,4 @@ void JinPing_Attack(Elements *self);
 void _JinPing_Attack_0(Elements *self);
 void _JinPing_Attack_1(Elements *self);
 void _JinPing_Attack_2(Elements *self);
+void _JinPing_Attack_3(Elements *self);

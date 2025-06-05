@@ -25,6 +25,7 @@
 #include "../projectiles/tornado_explosion.h"
 #include "../projectiles/tariff.h"
 #include "../projectiles/tariff_explosion.h"
+#include "../projectiles/jail.h"
 
 #include <math.h>
 /*
@@ -110,6 +111,9 @@ Elements *New_Projectile(int label, int x, int y, float angle_deg, float power, 
             break;
         case TARIFF_EXPLOSION:
             Tariff_Explosion_Initialize(pDerivedObj);
+            break;
+        case JAIL:
+            Jail_Initialize(pDerivedObj);
             break;
         default:
             // Optional: handle unknown values
@@ -301,6 +305,9 @@ void _Projectile_interact_Character(Elements *self, Elements *tar)
         case TARIFF_EXPLOSION:
             Tariff_Explosion_Interaction_Character(self, tar);
             break;
+        case JAIL:
+            Jail_Interaction_Character(self, tar);
+            break;
         default:
             // Optional: handle unknown projectiles
             fprintf(stderr, "Unknown projectile type: %d\n", proj->who);
@@ -394,6 +401,9 @@ void _Projectile_interact_Ground(Elements *self, Elements *tar)
                 break;
             case TARIFF_EXPLOSION:
                 Tariff_Explosion_Interaction_Ground(self, tar);
+                break;
+            case JAIL:
+                Jail_Interaction_Ground(self, tar);
                 break;
             default:
                 // Optional: handle unknown projectiles
